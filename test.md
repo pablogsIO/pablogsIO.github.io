@@ -1,4 +1,4 @@
-#LUAS
+# LUAS
 
 Enjoy the beautiful city of Dublin with this amazing app. Luas Dublin will show you Luas tram stops and real-time information for each stop. In addition, it will calculate the route to your stop by foot and bike
 
@@ -16,7 +16,7 @@ Enjoy the beautiful city of Dublin with this amazing app. Luas Dublin will show 
 
 Luas Dublin is available for free on the App Store.
 
-#Starbucks
+# Starbucks
 
 Starbucks Near Me shows you the closest Starbucks Coffee Shops to your location.
 You'll be able to check opening times, telephone number and how to get to the stablishment by different means of transport
@@ -37,11 +37,11 @@ You'll be able to check opening times, telephone number and how to get to the st
 Starbucks Coffee Near Me is available for free on the App Store.
 
 
-#Contact
+# Contact
 
 Hi! if you'd like to get in contact with me, please email me to:
 
-#Tic tac toe
+# Tic tac toe
 
 Enjoy the classic game of Tic Tac Toe. Play against the machine in a beautiful wooden board.
 
