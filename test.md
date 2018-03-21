@@ -32,6 +32,7 @@ You'll be able to check opening times, telephone number and how to get to the st
 * Main amenities
 * Calculate the route to selected Starbucks store
 * Make a phone call to selected Starbucks store
+* Set up custom location
 
 
 ### Download
@@ -54,7 +55,7 @@ Tic Tac Toe Wood is available on the App Store priced at €1.09 / $0.99 / £0.9
 
 # 404
 
-Ooooopsss, that's embarrasing!!! We have found error number 404! And that means....
+Ooooopsss, that's embarrassing!!! We have found error number 404! And that means....
 
 **Page not found!**
 
