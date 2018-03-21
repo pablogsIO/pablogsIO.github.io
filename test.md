@@ -54,8 +54,8 @@ Tic Tac Toe Wood is available on the App Store priced at €1.09 / $0.99 / £0.9
 
 # 404
 
-Ooooopssss!! We have found error number 404! And that means....
+Ooooopsss, that's embarrasing!!! We have found error number 404! And that means....
 
 **Page not found!**
 
-We are really sorry about that.
+We are really sorry about that. Apologies
