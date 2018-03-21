@@ -14,7 +14,9 @@ Enjoy the beautiful city of Dublin with this amazing app. Luas Dublin will show 
 
 ### Download
 
-Luas Dublin is available for free on the App Store.
+Luas Dublin is available for free on the App Store, requires internet access and contains no advertising or in-app purchases.
+
+Luas Dublin will run on any iPhone or iPod Touch running iOS 10.0 or greater. It is optimised so that it looks great on all sizes of device.
 
 # Starbucks
 
