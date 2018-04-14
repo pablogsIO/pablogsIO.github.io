@@ -31,6 +31,7 @@ a:focus {
 
 #content {
 	padding: 40px 0 0 0;
+	
 }
 
 #apps {
@@ -256,6 +257,91 @@ h4 {
 	padding-left: 20px;
 }
 
+#index {
+	margin-top: 0px;
+	
+}
+
+#index h1 {
+	font-size: 2.0em;
+}
+#index h2 {
+	font-size: 1.5em;
+	text-decoration: none;
+	margin-bottom: 0px;
+}
+#index h2 a {
+	font-size: 1.0em;
+	border-bottom: none;
+	margin: 0px;
+	display:block;
+}
+
+#index p {
+	font-size: 0.75em;
+	text-align: left;
+	line-height: normal;
+	color: #666;
+}
+
+#post  {
+	margin-top: 0px;
+}
+
+#post article h1 {
+	font-size: 1.5em;
+	font-variant: small-caps;
+	text-align: center;
+
+}
+#post article time {
+	font-size: 0.75em;
+	text-align: center;
+	display: block;
+}
+#post article header {
+	border-bottom: none;
+}
+article div {
+	width: 800px;
+	margin: 0 auto;
+	text-align: justify;
+    text-justify: inter-word;
+}
+
+#pagination {
+	margin-top: 20px;
+	width: 800px;
+	margin: 0 auto;
+	padding: 20px 0;
+	overflow: hidden;
+
+}
+
+#pagination a {
+	border-bottom: none;
+	width: 380px;
+	font-size: 0.85em;
+	line-height: 1.3em;
+	color: #666;
+}
+
+.pagination-previous {
+	float: right;
+	text-align: right;
+}
+
+.pagination-next {
+	float: left;
+	text-align: left;
+}
+
+#post-divider {
+
+	border-top: 1px solid #bbb;
+
+
+}
 
 table {
     width: 100%;
@@ -273,3 +359,21 @@ td {
     text-align:right;
 }
 
+
+#code article header
+{
+	border-bottom: 1px solid #999;
+}
+
+#code article header h3 {
+	padding: 0;
+	margin: 0;
+	font-family: tahoma, sans-serif;
+}
+
+#code article header p {
+	padding: 0 0 5px 0;
+	margin: 0;
+	font-size: 0.9em;
+	color: #666;
+}

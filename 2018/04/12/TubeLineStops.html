@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name = "viewport" content = "width = 1200">
+	<link href='https://fonts.googleapis.com/css?family=PT+Sans+Caption:400,700' rel='stylesheet' type='text/css'>
+	<link rel="stylesheet" href="/styles.css" />
+	<link rel="stylesheet" href="/highlightswift.css" />
+	<title>Pablo Apps - Apps for iPhone, iPad and Apple TV</title>
+</head>
+
+<body>
+	<div id="wrapper">
+	<header>
+	
+
+<table>
+    <tr>
+        <td class="d1">
+            <hgroup>
+				<h1><a href="/">Pablo Garcia</a></h1>
+				<h2>Apps for iPhone, iPad, Apple TV and Apple Watch</h2>
+			</hgroup>
+        </td>
+        
+        <td class="d3">
+			<nav>
+				<ul>
+					<li><a href="/">Home</a></li>
+					<li><a href="/blog/">Blog</a></li>
+					<li><a href="/contact/">Contact</a></li>
+				</ul>
+				
+			</nav>
+        </td>
+        
+    </tr>
+</table>
+
+</header>
+
+	
+		
+    <div id="content">
+    	<div id="post">
+    		<article>
+                <div>
+    			<header>
+    				<h1>TubeLineStops</h1>
+    				<time>April 12, 2018
+                </time>
+    			</header>
+
+				<p>Hello and welcome to the first post of this humble blog!</p>
+
+<p>A few months ago I did the <a href="https://itunes.apple.com/bz/app/luas-dublin/id1257004479?l=en&amp;mt=8">Luas Dublin app</a>. This app shows Luas lines and real-time information for each stop. What I would like to share with you today is a class that I used to draw Luas lines and stops. You can download a full example <a href="https://github.com/pablogsIO/TubeLineStops">here</a>.</p>
+
+<p>The TubeLineStop class is an UIView subclass. This class draws parts of the line, these parts could be the beginning of the line, the end, forks etc. You can see here different types:</p>
+
+<p align="center">
+  <img width="200" src="/images/tailLeft.png" />
+  <img width="200" src="/images/tailForkedLefStoptDown.png" />
+  <img width="200" src="/images/unionRightStopUp.png" />
+  <img width="200" src="/images/middle.png" />
+  <img width="200" src="/images/forkLeftStopDown.png" />
+  <img width="200" src="/images/tailRight.png" />
+</p>
+
+<p>You can configure the color of the line and the type of the stop that you are drawing.</p>
+
+<p>The TubeLineStop class overwrite the draw function of the UIView class. The first thing that we have to do for drawing it’s to create a context with the function UIGraphicsBeginImageContext. According to Apple class reference, UIGraphicsBeginImageContext creates a bitmap-based graphics context and makes it the current context.</p>
+
+<p>So, let’s do it</p>
+
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span> <span class="nv">context</span> <span class="o">=</span> <span class="kt">UIGraphicsGetCurrentContext</span><span class="p">()</span>
+</code></pre></div></div>
+
+<p>Once we have the context, we can draw lines, circles or whatever we want. For example, for drawing the first stop of a line we could do something like this:</p>
+
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">context</span><span class="p">?</span><span class="o">.</span><span class="nf">setLineWidth</span><span class="p">(</span><span class="mf">4.0</span><span class="p">)</span> <span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">context</span><span class="p">?</span><span class="o">.</span><span class="nf">setStrokeColor</span><span class="p">(</span><span class="n">color</span><span class="p">)</span> <span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">context</span><span class="p">?</span><span class="o">.</span><span class="nf">move</span><span class="p">(</span><span class="nv">to</span><span class="p">:</span> <span class="kt">CGPoint</span><span class="p">(</span><span class="nv">x</span><span class="p">:</span> <span class="n">width</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="nv">y</span><span class="p">:</span> <span class="n">yLinePosition</span><span class="p">))</span> <span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+<span class="n">context</span><span class="p">?</span><span class="o">.</span><span class="nf">addLine</span><span class="p">(</span><span class="nv">to</span><span class="p">:</span> <span class="kt">CGPoint</span><span class="p">(</span><span class="nv">x</span><span class="p">:</span> <span class="n">width</span><span class="p">,</span> <span class="nv">y</span><span class="p">:</span> <span class="n">yLinePosition</span><span class="p">))</span> <span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+<span class="n">context</span><span class="p">?</span><span class="o">.</span><span class="nf">strokePath</span><span class="p">()(</span><span class="mi">5</span><span class="p">)</span>
+<span class="n">context</span><span class="p">?</span><span class="o">.</span><span class="nf">addEllipse</span><span class="p">(</span><span class="nv">in</span><span class="p">:</span> <span class="kt">CGRect</span><span class="p">(</span><span class="nv">x</span><span class="p">:</span> <span class="n">width</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="nv">y</span><span class="p">:</span> <span class="n">yStopPosition</span><span class="p">,</span> 
+		   <span class="nv">width</span><span class="p">:</span> <span class="n">circleDiameter</span><span class="p">,</span> <span class="nv">height</span><span class="p">:</span> <span class="n">circleDiameter</span><span class="p">))</span> <span class="p">(</span><span class="mi">6</span><span class="p">)</span>
+<span class="n">context</span><span class="p">?</span><span class="o">.</span><span class="nf">fillPath</span><span class="p">()</span> <span class="p">(</span><span class="mi">7</span><span class="p">)</span>
+<span class="n">context</span><span class="p">?</span><span class="o">.</span><span class="nf">strokePath</span><span class="p">()</span>
+</code></pre></div></div>
+
+<p>First, we have to set the line width (1) and the stroke color (2). The next step is to move to the start point of the line that is going to be drawn (3). With (4) we specified where is the end of the line. After that, having defined the line width, color and path, we are ready to draw the line (5). To draw the tube stop, we must define the rectangular area into wich the shape must fit and then call the addEllipse(in:) context method (6). With (7) we fill the path.</p>
+
+
+
+                <div id="post-divider">
+                    <section id="pagination">
+                        
+                                
+                    </section>
+                </div>
+            </div>
+
+			</article>    
+    	</div>
+
+	</div>
+    
+	<footer>	
+	<p>&copy; 2018 <a href="mailto:pablo@pablogs.io">Pablo Garcia. </a><a href="https://jekyllrb.com">Powered by Jekyll</a></p>
+</footer>
+
+</body>
+
+</html>
+
+
