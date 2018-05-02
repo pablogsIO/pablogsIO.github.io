@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name = "viewport" content = "width = 1200">
+	<link href='https://fonts.googleapis.com/css?family=PT+Sans+Caption:400,700' rel='stylesheet' type='text/css'>
+	<link rel="stylesheet" href="/styles.css" />
+	<link rel="stylesheet" href="/highlightswift.css" />
+	<title>Pablo Apps - Apps for iPhone, iPad and Apple TV</title>
+</head>
+
+<body>
+	<div id="wrapper">
+	<header>
+	
+
+<table>
+    <tr>
+        <td class="d1">
+            <hgroup>
+				<h1><a href="/">Pablo Garcia</a></h1>
+				<h2>Apps for iPhone, iPad, Apple TV and Apple Watch</h2>
+			</hgroup>
+        </td>
+        
+        <td class="d3">
+			<nav>
+				<ul>
+					<li><a href="/">Home</a></li>
+					<li><a href="/blog/">Blog</a></li>
+					<li><a href="/contact/">Contact</a></li>
+				</ul>
+				
+			</nav>
+        </td>
+        
+    </tr>
+</table>
+
+</header>
+
+	
+		
+    <div id="content">
+    	<div id="post">
+    		<article>
+                <div>
+    			<header>
+    				<h1>Geometric Loaders</h1>
+    				<time>May 2, 2018
+                </time>
+    			</header>
+
+				<p>Whenever I do a new app, I always search on the internet for new cool activity indicators. Recently I’ve decided to create my own personal activity indicators.</p>
+
+<p>Here you can see what I’ve made</p>
+
+<p align="center">
+  <img width="200" src="/images/infinityloader.gif" />
+  <img width="200" src="/images/orbitloader.gif" />
+  <img width="200" src="/images/circleinmotionloader.gif" />
+  <img width="200" src="/images/blinkingcirclesLoader.gif" />
+  <img width="200" src="/images/circleLoader.gif" />
+</p>
+
+<p>You can download the source code <a href="https://github.com/pablogsIO/GeometricLoaders/tree/master/Source">here</a></p>
+
+<p>GeometricLoaders has a main class called GeometricLoader.swift. This class extends UIView and is responsible for creating the loader view and setting the size and position of the main view. We use the static method createGeometricLoader() to initialize the loader.</p>
+
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">open</span> <span class="kd">static</span> <span class="kd">func</span> <span class="nf">createGeometricLoader</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="k">Self</span> <span class="p">{</span>
+        
+        <span class="k">let</span> <span class="nv">loader</span> <span class="o">=</span> <span class="k">self</span><span class="o">.</span><span class="nf">init</span><span class="p">()</span>
+        <span class="n">loader</span><span class="o">.</span><span class="nf">setupView</span><span class="p">()</span>
+        
+        <span class="k">return</span> <span class="n">loader</span>
+    <span class="p">}</span>
+</code></pre></div></div>
+
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">internal</span> <span class="kd">func</span> <span class="nf">setupView</span><span class="p">()</span> <span class="p">{</span>
+        
+        <span class="k">guard</span> <span class="k">let</span> <span class="nv">window</span> <span class="o">=</span> <span class="kt">UIApplication</span><span class="o">.</span><span class="n">shared</span><span class="o">.</span><span class="n">delegate</span><span class="p">?</span><span class="o">.</span><span class="n">window</span> <span class="k">else</span> <span class="p">{</span> <span class="k">return</span> <span class="p">}</span>
+        <span class="k">guard</span> <span class="k">let</span> <span class="nv">mainWindow</span> <span class="o">=</span> <span class="n">window</span> <span class="k">else</span> <span class="p">{</span><span class="k">return</span><span class="p">}</span>
+        
+        <span class="k">self</span><span class="o">.</span><span class="n">frame</span> <span class="o">=</span> <span class="n">mainWindow</span><span class="o">.</span><span class="n">frame</span>
+        <span class="k">self</span><span class="o">.</span><span class="n">center</span> <span class="o">=</span> <span class="kt">CGPoint</span><span class="p">(</span><span class="nv">x</span><span class="p">:</span> <span class="n">mainWindow</span><span class="o">.</span><span class="n">bounds</span><span class="o">.</span><span class="n">midX</span><span class="p">,</span> <span class="nv">y</span><span class="p">:</span> <span class="n">mainWindow</span><span class="o">.</span><span class="n">bounds</span><span class="o">.</span><span class="n">midY</span><span class="p">)</span>
+        
+        <span class="n">mainWindow</span><span class="o">.</span><span class="nf">addSubview</span><span class="p">(</span><span class="k">self</span><span class="p">)</span>
+        
+        <span class="k">self</span><span class="o">.</span><span class="n">loaderSuperview</span> <span class="o">=</span> <span class="n">mainWindow</span>
+        <span class="k">self</span><span class="o">.</span><span class="n">loaderView</span><span class="o">.</span><span class="n">frame</span> <span class="o">=</span> <span class="kt">CGRect</span><span class="p">(</span><span class="nv">x</span><span class="p">:</span> <span class="n">frame</span><span class="o">.</span><span class="n">origin</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="nv">y</span><span class="p">:</span> <span class="n">frame</span><span class="o">.</span><span class="n">origin</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="nv">width</span><span class="p">:</span> <span class="n">frame</span><span class="o">.</span><span class="n">width</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="nv">height</span><span class="p">:</span> <span class="n">frame</span><span class="o">.</span><span class="n">width</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span>
+        <span class="k">self</span><span class="o">.</span><span class="n">loaderView</span><span class="o">.</span><span class="n">center</span> <span class="o">=</span> <span class="kt">CGPoint</span><span class="p">(</span><span class="nv">x</span><span class="p">:</span> <span class="n">frame</span><span class="o">.</span><span class="n">width</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="nv">y</span><span class="p">:</span> <span class="n">frame</span><span class="o">.</span><span class="n">height</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span>
+        <span class="k">self</span><span class="o">.</span><span class="n">loaderView</span><span class="o">.</span><span class="n">backgroundColor</span> <span class="o">=</span> <span class="kt">UIColor</span><span class="o">.</span><span class="n">clear</span>
+        <span class="k">self</span><span class="o">.</span><span class="n">isHidden</span> <span class="o">=</span> <span class="kc">true</span>
+        <span class="k">self</span><span class="o">.</span><span class="nf">addSubview</span><span class="p">(</span><span class="n">loaderView</span><span class="p">)</span>
+        
+    <span class="p">}</span>
+</code></pre></div></div>
+
+<p>Loaders (Infinity, Orbit, CirclesInMotion…) extend the GeometricLoader class. Once the Loader is created, just call startAnimation() to start the loader animation.</p>
+
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">func</span> <span class="nf">startAnimation</span><span class="p">()</span> <span class="p">{</span>
+        
+        <span class="k">self</span><span class="o">.</span><span class="nf">configureLoader</span><span class="p">()</span>
+        <span class="n">isHidden</span> <span class="o">=</span> <span class="kc">false</span>
+        <span class="k">if</span> <span class="n">superview</span> <span class="o">==</span> <span class="kc">nil</span> <span class="p">{</span>
+            <span class="n">loaderSuperview</span><span class="p">?</span><span class="o">.</span><span class="nf">addSubview</span><span class="p">(</span><span class="k">self</span><span class="p">)</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+</code></pre></div></div>
+
+<p>This method will configure the loader, add the loader elements to the layer of the loaderView and shows the loader’s animation.</p>
+
+<p>To stop the loader we call the stopAnimation() method.</p>
+
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">func</span> <span class="nf">stopAnimation</span><span class="p">()</span> <span class="p">{</span>
+        
+        <span class="k">self</span><span class="o">.</span><span class="n">isHidden</span> <span class="o">=</span> <span class="kc">false</span>
+        <span class="k">self</span><span class="o">.</span><span class="n">isAnimating</span> <span class="o">=</span> <span class="kc">false</span>
+        <span class="k">self</span><span class="o">.</span><span class="nf">removeFromSuperview</span><span class="p">()</span>
+        <span class="k">self</span><span class="o">.</span><span class="n">layer</span><span class="o">.</span><span class="nf">removeAllAnimations</span><span class="p">()</span>
+        
+    <span class="p">}</span>
+</code></pre></div></div>
+
+<p>You can download the full project with a fully functional example <a href="https://github.com/pablogsIO/GeometricLoaders">here</a></p>
+
+<p>And that’s it!! If you use it I’ll be happy to knwo about it.</p>
+
+
+                <div id="post-divider">
+                    <section id="pagination">
+                        
+                        
+                        <a class="pagination-next" href="/2018/04/12/TubeLineStops.html">&laquo; TubeLineStops </a>
+                                
+                    </section>
+                </div>
+            </div>
+
+			</article>    
+    	</div>
+
+	</div>
+    
+	<footer>	
+	<p>&copy; 2018 <a href="mailto:pablo@pablogs.io">Pablo Garcia. </a><a href="https://jekyllrb.com">Powered by Jekyll</a></p>
+</footer>
+
+</body>
+
+</html>
+
+
