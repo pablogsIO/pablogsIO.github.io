@@ -1,4 +1,68 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.7.3">Jekyll</generator><link href="/feed.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2018-06-02T08:02:40+02:00</updated><id>/</id><title type="html">Pablo Garcia - Apps for iPhone, iPad, Apple TV and Apple Watch</title><subtitle>Pablo Garcia - Apps for iPhone, iPad, Apple TV and Apple Watch</subtitle><entry><title type="html">Geometric Loaders</title><link href="/2018/05/02/Geometric-Loaders.html" rel="alternate" type="text/html" title="Geometric Loaders" /><published>2018-05-02T00:00:00+02:00</published><updated>2018-05-02T00:00:00+02:00</updated><id>/2018/05/02/Geometric%20Loaders</id><content type="html" xml:base="/2018/05/02/Geometric-Loaders.html">&lt;p&gt;Whenever I do a new app, I always search on the internet for new cool activity indicators. Recently I’ve decided to create my own personal activity indicators.&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.7.3">Jekyll</generator><link href="/feed.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2018-06-13T20:16:49+02:00</updated><id>/</id><title type="html">Pablo Garcia - Apps for iPhone, iPad, Apple TV and Apple Watch</title><subtitle>Pablo Garcia - Apps for iPhone, iPad, Apple TV and Apple Watch</subtitle><entry><title type="html">Camera Record Button</title><link href="/2018/06/12/CameraButton.html" rel="alternate" type="text/html" title="Camera Record Button" /><published>2018-06-12T00:00:00+02:00</published><updated>2018-06-12T00:00:00+02:00</updated><id>/2018/06/12/CameraButton</id><content type="html" xml:base="/2018/06/12/CameraButton.html">&lt;p&gt;For a project that I’ve been working on, I decided to create a record button like the one in iOS.&lt;/p&gt;
+
+&lt;p&gt;Here is the result.&lt;/p&gt;
+
+&lt;p align=&quot;center&quot;&gt;
+  &lt;img width=&quot;300&quot; src=&quot;/images/recordbutton.gif&quot; /&gt;
+&lt;/p&gt;
+
+&lt;p&gt;The source code is on &lt;a href=&quot;https://github.com/pablogsIO/RecordButton/tree/master/Source&quot;&gt;github&lt;/a&gt;&lt;/p&gt;
+
+&lt;h4 id=&quot;overriding-the-draw_-rect-cgrect-function&quot;&gt;Overriding the draw(_ rect: CGRect) function&lt;/h4&gt;
+
+&lt;p&gt;RecordButton extends UIView and overrides the draw(_ rect: CGRect) function. In this function, we draw the button and add a gesture recognizer to detect when the button is pressed. We also add an animation to transform the button from a round shape to a square.&lt;/p&gt;
+
+&lt;h4 id=&quot;delegate&quot;&gt;Delegate&lt;/h4&gt;
+
+&lt;p&gt;Classes that use RecordButton class should implement RecordButtonDelegate to know the button has been pressed.&lt;/p&gt;
+
+&lt;div class=&quot;language-swift highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kd&quot;&gt;protocol&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;RecordButtonDelegate&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+
+    &lt;span class=&quot;kd&quot;&gt;func&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;tapButton&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;isRecording&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;Bool&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;usage&quot;&gt;Usage&lt;/h3&gt;
+
+&lt;h4 id=&quot;interface-builder&quot;&gt;Interface Builder&lt;/h4&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Drag RecordButton class into your project&lt;/li&gt;
+  &lt;li&gt;In your storyboard, select an UIView&lt;/li&gt;
+  &lt;li&gt;Go the the identity inspector and in the class field, type RecordButton instead of UIView&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p align=&quot;center&quot;&gt;
+    &lt;img width=&quot;800&quot; src=&quot;/images/IBRecordButton.gif&quot; /&gt;
+&lt;/p&gt;
+
+&lt;h4 id=&quot;manually&quot;&gt;Manually&lt;/h4&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Drag RecordButton class into your project&lt;/li&gt;
+  &lt;li&gt;In your ViewController add the following&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;language-swift highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;    &lt;span class=&quot;k&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;recordButton&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;RecordButton&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;?&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;override&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;func&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;viewDidAppear&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;_&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;animated&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;Bool&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+
+        &lt;span class=&quot;k&quot;&gt;super&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;viewDidAppear&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;animated&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+        &lt;span class=&quot;k&quot;&gt;let&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;recordButtonSide&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;view&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;bounds&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;size&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;height&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;10&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;recordButton&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;RecordButton&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;frame&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;CGRect&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;view&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;bounds&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;width&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;recordButtonSide&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+                                                  &lt;span class=&quot;nv&quot;&gt;y&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;view&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;bounds&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;height&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;recordButtonSide&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+                                                  &lt;span class=&quot;nv&quot;&gt;width&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;recordButtonSide&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+                                                  &lt;span class=&quot;nv&quot;&gt;height&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;recordButtonSide&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;recordButton&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;?&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;delegate&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;self&lt;/span&gt;
+
+        &lt;span class=&quot;k&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;view&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;addSubview&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;recordButton&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;!&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;You can download the full project with a fully functional example &lt;a href=&quot;https://github.com/pablogsIO/RecordButton&quot;&gt;here&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;And that’s it!! If you use it I’ll be happy to know about it.&lt;/p&gt;</content><author><name></name></author><summary type="html">For a project that I’ve been working on, I decided to create a record button like the one in iOS.</summary></entry><entry><title type="html">Geometric Loaders</title><link href="/2018/05/02/Geometric-Loaders.html" rel="alternate" type="text/html" title="Geometric Loaders" /><published>2018-05-02T00:00:00+02:00</published><updated>2018-05-02T00:00:00+02:00</updated><id>/2018/05/02/Geometric%20Loaders</id><content type="html" xml:base="/2018/05/02/Geometric-Loaders.html">&lt;p&gt;Whenever I do a new app, I always search on the internet for new cool activity indicators. Recently I’ve decided to create my own personal activity indicators.&lt;/p&gt;
 
 &lt;p&gt;Here you can see what I’ve made&lt;/p&gt;
 
