@@ -1,4 +1,51 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.7.3">Jekyll</generator><link href="/feed.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2018-06-27T21:11:20+02:00</updated><id>/</id><title type="html">Pablo Garcia - Apps for iPhone, iPad, Apple TV and Apple Watch</title><subtitle>Pablo Garcia - Apps for iPhone, iPad, Apple TV and Apple Watch</subtitle><entry><title type="html">Camera Record Button</title><link href="/2018/06/12/CameraButton.html" rel="alternate" type="text/html" title="Camera Record Button" /><published>2018-06-12T00:00:00+02:00</published><updated>2018-06-12T00:00:00+02:00</updated><id>/2018/06/12/CameraButton</id><content type="html" xml:base="/2018/06/12/CameraButton.html">&lt;p&gt;For a project that I’ve been working on, I decided to create a record button like the one in iOS.&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.7.3">Jekyll</generator><link href="/feed.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2018-07-09T18:47:40+02:00</updated><id>/</id><title type="html">Pablo Garcia - Apps for iPhone, iPad, Apple TV and Apple Watch</title><subtitle>Pablo Garcia - Apps for iPhone, iPad, Apple TV and Apple Watch</subtitle><entry><title type="html">Front Camera UIView</title><link href="/2018/07/09/Front-Camera-UIView.html" rel="alternate" type="text/html" title="Front Camera UIView" /><published>2018-07-09T00:00:00+02:00</published><updated>2018-07-09T00:00:00+02:00</updated><id>/2018/07/09/Front%20Camera%20UIView</id><content type="html" xml:base="/2018/07/09/Front-Camera-UIView.html">&lt;p&gt;I’ve developed a FrontCameraView UIView class for a project that I’ve been working on ( Don’t you think Luis? ;) ). This project has allowed me the opportunity to study Apple’s AVFoundation framework.&lt;/p&gt;
+
+&lt;p&gt;According to Apple documentation:&lt;/p&gt;
+
+&lt;p&gt;The AVFoundation framework combines four major technology areas that together encompass a wide range of tasks for capturing, processing, synthesising, controlling, importing and exporting audiovisual media on Apple platforms.&lt;/p&gt;
+
+&lt;p&gt;The main features of FrontCameraView class are:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Preview front camera&lt;/li&gt;
+  &lt;li&gt;Move the preview UIView to every corner of the screen.&lt;/li&gt;
+  &lt;li&gt;Record video&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;configure-camera-and-microphone-permission&quot;&gt;Configure camera and microphone permission&lt;/h3&gt;
+
+&lt;p&gt;First of all, we need to ask the user for permission to use the camera and microphone. That’s why we
+need to configure our Info.plist. Include the NSCameraUsageDescription and NSMicrophoneUsageDescription key in your app’s Info.plist file. For each key we have to provide a message that explains to the user why our app needs to capture media.&lt;/p&gt;
+
+&lt;p&gt;This message will appear the first time we run the app and usually the user accepts it. But, what happens if the user has revoked this permission? I think it’s a good idea to check out if our app still has permission to access the camera and microphone. If not, we could show a warning message to the user stating that and offering a solution.&lt;/p&gt;
+
+&lt;p&gt;With this line of code we will show a warning message and, if the user presses the Settings button, send him to the app’s configuration panel.&lt;/p&gt;
+
+&lt;h3 id=&quot;cameramanager-class&quot;&gt;CameraManager class&lt;/h3&gt;
+
+&lt;p&gt;This class manage camera permissions, access, configuration, preview and recording.&lt;/p&gt;
+
+&lt;p&gt;This class has the following public functions:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;previewFrontCamera&lt;/li&gt;
+  &lt;li&gt;startRecording&lt;/li&gt;
+  &lt;li&gt;stopRecording&lt;/li&gt;
+  &lt;li&gt;cameraAuthorisation&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;frontcameraview-class&quot;&gt;FrontCameraView class&lt;/h3&gt;
+
+&lt;p&gt;This class shows the camera preview and allows the user to move the view to every corner of the screen and start and stop recording the camera preview.&lt;/p&gt;
+
+&lt;p&gt;This class has the following public functions:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;starPreview&lt;/li&gt;
+  &lt;li&gt;stopPreview&lt;/li&gt;
+  &lt;li&gt;startRecording&lt;/li&gt;
+  &lt;li&gt;stopRecording&lt;/li&gt;
+&lt;/ul&gt;</content><author><name></name></author><summary type="html">I’ve developed a FrontCameraView UIView class for a project that I’ve been working on ( Don’t you think Luis? ;) ). This project has allowed me the opportunity to study Apple’s AVFoundation framework.</summary></entry><entry><title type="html">Camera Record Button</title><link href="/2018/06/12/CameraButton.html" rel="alternate" type="text/html" title="Camera Record Button" /><published>2018-06-12T00:00:00+02:00</published><updated>2018-06-12T00:00:00+02:00</updated><id>/2018/06/12/CameraButton</id><content type="html" xml:base="/2018/06/12/CameraButton.html">&lt;p&gt;For a project that I’ve been working on, I decided to create a record button like the one in iOS.&lt;/p&gt;
 
 &lt;p&gt;Here is the result.&lt;/p&gt;
 
