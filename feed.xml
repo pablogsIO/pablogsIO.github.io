@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.7.3">Jekyll</generator><link href="/feed.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2018-07-22T23:33:51+02:00</updated><id>/</id><title type="html">Pablo Garcia - Apps for iPhone, iPad, Apple TV and Apple Watch</title><subtitle>Pablo Garcia - Apps for iPhone, iPad, Apple TV and Apple Watch</subtitle><entry><title type="html">Front Camera UIView</title><link href="/2018/07/09/Front-Camera-UIView.html" rel="alternate" type="text/html" title="Front Camera UIView" /><published>2018-07-09T00:00:00+02:00</published><updated>2018-07-09T00:00:00+02:00</updated><id>/2018/07/09/Front%20Camera%20UIView</id><content type="html" xml:base="/2018/07/09/Front-Camera-UIView.html">&lt;p&gt;I’ve developed a FrontCameraView UIView class for a project that I’ve been working on ( Don’t you think Luis? ;) ). This project has allowed me the opportunity to study Apple’s AVFoundation framework.&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.7.3">Jekyll</generator><link href="/feed.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2018-07-25T22:38:56+02:00</updated><id>/</id><title type="html">Pablo Garcia - Apps for iPhone, iPad, Apple TV and Apple Watch</title><subtitle>Pablo Garcia - Apps for iPhone, iPad, Apple TV and Apple Watch</subtitle><entry><title type="html">Front Camera UIView</title><link href="/2018/07/09/Front-Camera-UIView.html" rel="alternate" type="text/html" title="Front Camera UIView" /><published>2018-07-09T00:00:00+02:00</published><updated>2018-07-09T00:00:00+02:00</updated><id>/2018/07/09/Front%20Camera%20UIView</id><content type="html" xml:base="/2018/07/09/Front-Camera-UIView.html">&lt;p&gt;I’ve developed a FrontCameraView UIView class for a project that I’ve been working on ( Don’t you think Luis? ;) ). This project has allowed me the opportunity to study Apple’s AVFoundation framework.&lt;/p&gt;
 
 &lt;p&gt;According to Apple documentation:&lt;/p&gt;
 
@@ -45,7 +45,17 @@ need to configure our Info.plist. Include the NSCameraUsageDescription and NSMic
   &lt;li&gt;stopPreview&lt;/li&gt;
   &lt;li&gt;startRecording&lt;/li&gt;
   &lt;li&gt;stopRecording&lt;/li&gt;
-&lt;/ul&gt;</content><author><name></name></author><summary type="html">I’ve developed a FrontCameraView UIView class for a project that I’ve been working on ( Don’t you think Luis? ;) ). This project has allowed me the opportunity to study Apple’s AVFoundation framework.</summary></entry><entry><title type="html">Camera Record Button</title><link href="/2018/06/12/CameraButton.html" rel="alternate" type="text/html" title="Camera Record Button" /><published>2018-06-12T00:00:00+02:00</published><updated>2018-06-12T00:00:00+02:00</updated><id>/2018/06/12/CameraButton</id><content type="html" xml:base="/2018/06/12/CameraButton.html">&lt;p&gt;For a project that I’ve been working on, I decided to create a record button like the one in iOS.&lt;/p&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;frontcameraview-in-action&quot;&gt;FrontCameraView in Action&lt;/h3&gt;
+
+&lt;p align=&quot;center&quot;&gt;
+    &lt;img width=&quot;200&quot; src=&quot;/images/duck.gif&quot; /&gt;
+&lt;/p&gt;
+
+&lt;p&gt;You can download the full project with a fully functional example &lt;a href=&quot;https://github.com/pablogsIO/FrontCameraView&quot;&gt;here&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;And that’s it!! If you use it I’ll be happy to know about it.&lt;/p&gt;</content><author><name></name></author><summary type="html">I’ve developed a FrontCameraView UIView class for a project that I’ve been working on ( Don’t you think Luis? ;) ). This project has allowed me the opportunity to study Apple’s AVFoundation framework.</summary></entry><entry><title type="html">Camera Record Button</title><link href="/2018/06/12/CameraButton.html" rel="alternate" type="text/html" title="Camera Record Button" /><published>2018-06-12T00:00:00+02:00</published><updated>2018-06-12T00:00:00+02:00</updated><id>/2018/06/12/CameraButton</id><content type="html" xml:base="/2018/06/12/CameraButton.html">&lt;p&gt;For a project that I’ve been working on, I decided to create a record button like the one in iOS.&lt;/p&gt;
 
 &lt;p&gt;Here is the result.&lt;/p&gt;
 
