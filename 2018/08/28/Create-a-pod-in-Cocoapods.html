@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name = "viewport" content = "width = 1200">
+	<link href='https://fonts.googleapis.com/css?family=PT+Sans+Caption:400,700' rel='stylesheet' type='text/css'>
+	<link rel="stylesheet" href="/styles.css" />
+	<link rel="stylesheet" href="/highlightswift.css" />
+	<title>Pablo Apps - Apps for iPhone, iPad and Apple TV</title>
+</head>
+
+<body>
+	<div id="wrapper">
+	<header>
+	
+
+<table>
+    <tr>
+        <td class="d1">
+            <hgroup>
+				<h1><a href="/">Pablo Garcia</a></h1>
+				<h2>Apps for iPhone, iPad, Apple TV and Apple Watch</h2>
+			</hgroup>
+        </td>
+        
+        <td class="d3">
+			<nav>
+				<ul>
+					<li><a href="/">Home</a></li>
+					<li><a href="/blog/">Blog</a></li>
+					<li><a href="/contact/">Contact</a></li>
+				</ul>
+				
+			</nav>
+        </td>
+        
+    </tr>
+</table>
+
+</header>
+
+	
+		
+    <div id="content">
+    	<div id="post">
+    		<article>
+                <div>
+    			<header>
+    				<h1>Create a Pod in Cocoapods</h1>
+    				<time>August 28, 2018
+                </time>
+    			</header>
+
+				<p>This is a simple guide to upload your first Pod to <a href="https://cocoapods.org">Cocoapods</a>.</p>
+
+<p>CocoaPods is a dependency manager for Swift and Objective-C Cocoa projects and I’m sure that you have a lot of code you are proud of and would like to share with the world.</p>
+
+<h3 id="first-steps---install-cocoapods">First steps - Install CocoaPods</h3>
+
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="err">$</span> <span class="n">sudo</span> <span class="n">gem</span> <span class="n">install</span> <span class="n">cocoapods</span>
+</code></pre></div></div>
+
+<h3 id="upload-your-code-to-github">Upload your code to GitHub</h3>
+
+<p>Upload your code/project to github. <a href="https://github.com/pablogsIO/GeometricLoaders">Here</a> you can find an example of a library I uploaded to Cocoapods.</p>
+
+<p align="center">
+  <img width="600" src="/images/cocoapod_1.png" />
+</p>
+
+<ul>
+  <li>Source folder contains the source code of the library</li>
+  <li>GeometricLoaders folder contains a fully functional example of how GeometricLoaders works</li>
+</ul>
+
+<h3 id="create-podspec-file">Create podspec file</h3>
+
+<p>A Pod has a podspec file that defines the specifications of a Pod. In this example we have the following podspec:</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nl">Pod:</span><span class="o">:</span><span class="n">Spec</span><span class="o">.</span><span class="na">new</span> <span class="k">do</span> <span class="o">|</span><span class="n">s</span><span class="o">|</span>
+  <span class="n">s</span><span class="o">.</span><span class="na">name</span>         <span class="o">=</span> <span class="s">"GeometricLoaders"</span>
+  <span class="n">s</span><span class="o">.</span><span class="na">version</span>      <span class="o">=</span> <span class="s">"1.1.0"</span>
+  <span class="n">s</span><span class="o">.</span><span class="na">summary</span>      <span class="o">=</span> <span class="s">"Fancy and beautiful loaders for you awesome apps!"</span>
+  <span class="n">s</span><span class="o">.</span><span class="na">homepage</span>     <span class="o">=</span> <span class="s">"https://github.com/pablogsIO/GeometricLoaders"</span>
+  <span class="n">s</span><span class="o">.</span><span class="na">license</span>      <span class="o">=</span> <span class="err">'</span><span class="n">MIT</span><span class="err">'</span>
+  <span class="n">s</span><span class="o">.</span><span class="na">author</span>       <span class="o">=</span> <span class="s">"Pablo Garcia"</span>
+  <span class="n">s</span><span class="o">.</span><span class="na">source</span>       <span class="o">=</span> <span class="o">{</span> <span class="o">:</span><span class="n">git</span> <span class="o">=&gt;</span> <span class="s">"https://github.com/pablogsIO/GeometricLoaders.git"</span><span class="o">,</span> <span class="o">:</span><span class="n">tag</span> <span class="o">=&gt;</span> <span class="n">s</span><span class="o">.</span><span class="na">version</span> <span class="o">}</span>
+  <span class="n">s</span><span class="o">.</span><span class="na">screenshots</span>   <span class="o">=</span> <span class="o">[</span><span class="err">'</span><span class="nl">https:</span><span class="c1">//raw.githubusercontent.com/pablogsIO/GeometricLoaders/master/Images/infinityloader.gif',</span>
+    <span class="err">'</span><span class="nl">https:</span><span class="c1">//raw.githubusercontent.com/pablogsIO/GeometricLoaders/master/Images/blinkingcirclesLoader.gif',</span>
+    <span class="err">'</span><span class="nl">https:</span><span class="c1">//raw.githubusercontent.com/pablogsIO/GeometricLoaders/master/Images/circleLoader.gif',</span>
+    <span class="err">'</span><span class="nl">https:</span><span class="c1">//raw.githubusercontent.com/pablogsIO/GeometricLoaders/master/Images/circleinmotionloader.gif',</span>
+    <span class="err">'</span><span class="nl">https:</span><span class="c1">//raw.githubusercontent.com/pablogsIO/GeometricLoaders/master/Images/orbitloader.gif',</span>
+    <span class="err">'</span><span class="nl">https:</span><span class="c1">//raw.githubusercontent.com/pablogsIO/GeometricLoaders/master/Images/waterwaves.gif']</span>
+  <span class="n">s</span><span class="o">.</span><span class="na">platform</span>     <span class="o">=</span> <span class="o">:</span><span class="n">ios</span><span class="o">,</span> <span class="err">'</span><span class="mf">10.0</span><span class="err">'</span>
+  <span class="n">s</span><span class="o">.</span><span class="na">source_files</span> <span class="o">=</span> <span class="err">'</span><span class="n">Source</span><span class="o">/*.</span><span class="na">swift</span><span class="err">'</span>
+  <span class="n">s</span><span class="o">.</span><span class="na">frameworks</span>   <span class="o">=</span> <span class="err">'</span><span class="n">UIKit</span><span class="err">'</span>
+  <span class="n">s</span><span class="o">.</span><span class="na">swift_version</span><span class="o">=</span> <span class="err">'</span><span class="mf">4.0</span><span class="err">'</span>
+  <span class="n">s</span><span class="o">.</span><span class="na">requires_arc</span> <span class="o">=</span> <span class="kc">true</span>
+  <span class="n">s</span><span class="o">.</span><span class="na">social_media_url</span> <span class="o">=</span> <span class="err">'</span><span class="nl">https:</span><span class="c1">//twitter.com/_pablogs_'</span>
+<span class="n">end</span>
+</code></pre></div></div>
+
+<ul>
+  <li>s.name: The name of the Pod.</li>
+  <li>s.version: The version of the Pod. CocoaPods follows semantic versioning. The version have to be equals to GitHub’s release</li>
+  <li>s.summary: The description should be short, yet informative</li>
+  <li>s.homepage: The URL of the homepage of the Pod</li>
+  <li>s.license: The license of the Pod</li>
+  <li>s.author: This is you!</li>
+  <li>s.source_files: The location from where the library should be retrieved.</li>
+  <li>s.screenshots: A list of URLs to images showcasing the Pod.</li>
+  <li>s.platform: The platform on which this Pod is supported</li>
+  <li>s.frameworks: A list of system frameworks that the user’s target needs to link against.</li>
+  <li>s.swift_version: The version of Swift that the specification supports.</li>
+  <li>s.requires_arc: requires_arc allows you to specify which source_files use ARC</li>
+  <li>s.social_media_url: The URL for the social media contact of the Pod, CocoaPods web services can use this.</li>
+</ul>
+
+<p><a href="https://guides.cocoapods.org/syntax/podspec.html">Here</a> you can find more information about podspec file</p>
+
+<h3 id="upload-podspec-and-create-a-release">Upload podspec and create a release</h3>
+
+<p>Once you have created podspec you have to create a release in Github.</p>
+
+<p align="center">
+  <img width="600" src="/images/cocoapod_2.png" />
+</p>
+
+<h3 id="publishing-your-pod">Publishing your Pod</h3>
+
+<p>Well done!!! we are pretty close to the end.</p>
+
+<h4 id="verifying-your-pod---pod-lib-lint">Verifying your pod - Pod lib lint</h4>
+
+<p>Before publish your pod we should verify that everything is correct.</p>
+
+<p>Open a terminal and in your project folder type</p>
+
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="err">$</span><span class="o">&gt;</span> <span class="n">pod</span> <span class="n">lib</span> <span class="n">lint</span>
+</code></pre></div></div>
+<p>If everything is ok you should get something like this…</p>
+
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+ <span class="o">-&gt;</span> <span class="kt">GeometricLoaders</span> <span class="p">(</span><span class="mf">1.1</span><span class="o">.</span><span class="mi">0</span><span class="p">)</span>
+
+<span class="kt">GeometricLoaders</span> <span class="n">passed</span> <span class="n">validation</span><span class="o">.</span>
+</code></pre></div></div>
+
+<h4 id="create-a-cocoapods-account">Create a CocoaPods account</h4>
+
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">pod</span> <span class="n">trunk</span> <span class="n">register</span> <span class="o">&lt;</span><span class="kt">Your</span> <span class="kt">Email</span><span class="o">&gt;</span>
+</code></pre></div></div>
+
+<p>For more information please visit <a href="https://guides.cocoapods.org/making/getting-setup-with-trunk.html">Getting setup with trunk</a></p>
+
+<h4 id="publish-it">Publish it!!!!</h4>
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">pod</span> <span class="n">trunk</span> <span class="n">push</span> <span class="kt">GeometricLoaders</span><span class="o">.</span><span class="n">podspec</span>
+</code></pre></div></div>
+
+<p>And that’s all folks!!!</p>
+
+
+                <div id="post-divider">
+                    <section id="pagination">
+                        
+                        
+                        <a class="pagination-next" href="/2018/07/09/Front-Camera-UIView.html">&laquo; Front Camera UIView </a>
+                                
+                    </section>
+                </div>
+            </div>
+
+			</article>    
+    	</div>
+
+	</div>
+    
+	<footer>	
+	<p>&copy; 2018 <a href="mailto:pablo@pablogs.io">Pablo Garcia. </a><a href="https://jekyllrb.com">Powered by Jekyll</a></p>
+</footer>
+
+</body>
+
+</html>
+
+
