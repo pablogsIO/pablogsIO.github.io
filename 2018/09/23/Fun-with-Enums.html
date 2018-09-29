@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name = "viewport" content = "width = 1200">
+	<link href='https://fonts.googleapis.com/css?family=PT+Sans+Caption:400,700' rel='stylesheet' type='text/css'>
+	<link rel="stylesheet" href="/styles.css" />
+	<link rel="stylesheet" href="/highlightswift.css" />
+	<title>Pablo Apps - Apps for iPhone, iPad and Apple TV</title>
+</head>
+
+<body>
+	<div id="wrapper">
+	<header>
+	
+
+<table>
+    <tr>
+        <td class="d1">
+            <hgroup>
+				<h1><a href="/">Pablo Garcia</a></h1>
+				<h2>Apps for iPhone, iPad, Apple TV and Apple Watch</h2>
+			</hgroup>
+        </td>
+        
+        <td class="d3">
+			<nav>
+				<ul>
+					<li><a href="/">Home</a></li>
+					<li><a href="/blog/">Blog</a></li>
+					<li><a href="/contact/">Contact</a></li>
+				</ul>
+				
+			</nav>
+        </td>
+        
+    </tr>
+</table>
+
+</header>
+
+	
+		
+    <div id="content">
+    	<div id="post">
+    		<article>
+                <div>
+    			<header>
+    				<h1>Fun with enums (Fun with flags)</h1>
+    				<time>September 23, 2018
+                </time>
+    			</header>
+
+				<h2 id="fun-with-enums---api-endpoint">Fun with Enums - API Endpoint</h2>
+
+<p>Swift enums are pretty awesome. For a person like me, whose first programming language was C (a long, long, long time ago), it’s like a breath of fresh air.</p>
+
+<p>Enums are first-class types and can adopt features traditionally supported only by classes:</p>
+
+<ul>
+  <li>Conform to protocols</li>
+  <li>Computed properties</li>
+  <li>Instance methods</li>
+  <li>Initializers</li>
+</ul>
+
+<h3 id="basic-enums">Basic Enums</h3>
+<p>Let’s start with a classic example</p>
+
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">enum</span> <span class="kt">Guitar</span> <span class="p">{</span>
+  <span class="k">case</span> <span class="n">classical</span>
+  <span class="k">case</span> <span class="n">electric</span>
+  <span class="k">case</span> <span class="n">acoustic</span>
+ <span class="p">}</span>
+</code></pre></div></div>
+<h3 id="associated-values">Associated values</h3>
+
+<p>Associated values are a perfect way to add additional information to enums. Imagine for instance that you would like to add some information to our enum example. A guitar has a serial number. An electric guitar could have one, two or more pickups, an acoustic guitar could be electrified or not and so on. Let’s translate this into code.</p>
+
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">enum</span> <span class="kt">Guitar</span> <span class="p">{</span>
+    <span class="k">case</span> <span class="nf">classical</span><span class="p">(</span><span class="nv">serialNumber</span><span class="p">:</span> <span class="kt">String</span><span class="p">)</span>
+    <span class="k">case</span> <span class="nf">electric</span><span class="p">(</span><span class="nv">serialNumber</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span> <span class="nv">pickups</span><span class="p">:</span> <span class="kt">Int</span><span class="p">)</span>
+    <span class="k">case</span> <span class="nf">acoustic</span><span class="p">(</span><span class="nv">serialNumber</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span> <span class="nv">electrified</span><span class="p">:</span> <span class="kt">Bool</span><span class="p">)</span>
+<span class="p">}</span>
+
+<span class="k">let</span> <span class="nv">classicalGuitar</span> <span class="o">=</span> <span class="kt">Guitar</span><span class="o">.</span><span class="nf">classical</span><span class="p">(</span><span class="nv">serialNumber</span><span class="p">:</span> <span class="s">"SW87234"</span><span class="p">)</span>
+<span class="k">let</span> <span class="nv">electricGuitar</span> <span class="o">=</span> <span class="kt">Guitar</span><span class="o">.</span><span class="nf">electric</span><span class="p">(</span><span class="nv">serialNumber</span><span class="p">:</span> <span class="s">"HG0983"</span><span class="p">,</span> <span class="nv">pickups</span><span class="p">:</span> <span class="mi">2</span><span class="p">)</span>
+<span class="k">let</span> <span class="nv">acousticGuitar</span> <span class="o">=</span> <span class="kt">Guitar</span><span class="o">.</span><span class="nf">acoustic</span><span class="p">(</span><span class="nv">serialNumber</span><span class="p">:</span> <span class="s">"JJ8888"</span><span class="p">,</span> <span class="nv">electrified</span><span class="p">:</span> <span class="kc">false</span><span class="p">)</span>
+
+<span class="k">if</span> <span class="k">case</span> <span class="k">let</span> <span class="nv">Guitar</span><span class="o">.</span><span class="nf">acoustic</span><span class="p">(</span><span class="n">serialNumber</span><span class="p">,</span> <span class="n">electrified</span><span class="p">)</span> <span class="o">=</span> <span class="n">acousticGuitar</span> <span class="p">{</span>
+
+    <span class="nf">print</span><span class="p">(</span><span class="s">"Acoustic guitar. Serial number</span><span class="se">\(</span><span class="n">serialNumber</span><span class="se">)</span><span class="s">. Electrified: </span><span class="se">\(</span><span class="n">electrified</span><span class="se">)</span><span class="s">"</span><span class="p">)</span>
+<span class="p">}</span>
+</code></pre></div></div>
+<p><strong>Output</strong>:</p>
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="kt">Acoustic</span> <span class="n">guitar</span><span class="o">.</span> <span class="kt">Serial</span> <span class="n">numberJJ8888</span><span class="o">.</span> <span class="kt">Electrified</span><span class="p">:</span> <span class="kc">false</span>
+</code></pre></div></div>
+<h3 id="enums-and-protocols">Enums and protocols</h3>
+
+<p>For example, we could model API Endpoints with enums. What we would like to do is build different endpoints based on our needs. Take the <a href="https://api.tfl.gov.uk/">TFL Unified API</a> for instance. To retrieve lines status for a few lines (victoria, piccadilly and central), we’d have to build something like this https://api.tfl.gov.uk//Line/victoria,piccadilly,central/Status</p>
+
+<p>Wouldn’t it be great if, with a simple line of code, we could get this url? That’s pretty cool but you will say…Ooh great!….show me the code!!! Ok, let’s do it.</p>
+
+<p>We define a protocol with a url variable</p>
+
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">protocol</span> <span class="kt">EndPointProtocol</span> <span class="p">{</span>
+    <span class="k">var</span> <span class="nv">url</span><span class="p">:</span> <span class="kt">URL</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">enum</span> <span class="kt">LineEndPoint</span> <span class="p">{</span>
+    <span class="k">case</span> <span class="n">validmodes</span>
+    <span class="k">case</span> <span class="nf">lineStatus</span><span class="p">([</span><span class="kt">String</span><span class="p">])</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">extension</span> <span class="kt">LineEndPoint</span><span class="p">:</span> <span class="kt">EndPointProtocol</span> <span class="p">{</span>
+
+    <span class="k">var</span> <span class="nv">url</span><span class="p">:</span> <span class="kt">URL</span> <span class="p">{</span>
+
+        <span class="k">guard</span> <span class="k">var</span> <span class="nv">url</span> <span class="o">=</span> <span class="kt">URLComponents</span><span class="p">(</span><span class="nv">string</span><span class="p">:</span> <span class="s">"https://api.tfl.gov.uk"</span><span class="p">)</span> <span class="k">else</span> <span class="p">{</span> <span class="nf">fatalError</span><span class="p">(</span><span class="s">"Error"</span><span class="p">)</span> <span class="p">}</span>
+
+        <span class="k">switch</span> <span class="k">self</span> <span class="p">{</span>
+        <span class="k">case</span> <span class="o">.</span><span class="nv">validmodes</span><span class="p">:</span>
+            <span class="n">url</span><span class="o">.</span><span class="n">path</span> <span class="o">=</span> <span class="s">"/Line/Meta/Modes"</span>
+        <span class="k">case</span> <span class="o">.</span><span class="nf">lineStatus</span><span class="p">(</span><span class="k">let</span> <span class="nv">idLines</span><span class="p">):</span>
+            <span class="k">let</span> <span class="nv">linesIdcommaseparated</span> <span class="o">=</span> <span class="nf">getCommaSeparated</span><span class="p">(</span><span class="nv">array</span><span class="p">:</span> <span class="n">idLines</span><span class="p">)</span>
+            <span class="n">url</span><span class="o">.</span><span class="n">path</span> <span class="o">=</span> <span class="s">"/Line/</span><span class="se">\(</span><span class="n">linesIdcommaseparated</span><span class="se">)</span><span class="s">/Status"</span>
+        <span class="p">}</span>
+
+        <span class="k">let</span> <span class="nv">urlFinal</span> <span class="o">=</span> <span class="n">url</span><span class="o">.</span><span class="n">url</span>
+
+        <span class="k">return</span> <span class="n">urlFinal</span><span class="o">!</span>
+    <span class="p">}</span>
+
+    <span class="kd">private</span> <span class="kd">func</span> <span class="nf">getCommaSeparated</span><span class="p">(</span><span class="nv">array</span><span class="p">:</span> <span class="p">[</span><span class="kt">String</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kt">String</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="n">array</span><span class="o">.</span><span class="n">map</span> <span class="p">{</span> <span class="kt">String</span><span class="p">(</span><span class="nv">$0</span><span class="p">)}</span><span class="o">.</span><span class="nf">joined</span><span class="p">(</span><span class="nv">separator</span><span class="p">:</span> <span class="s">","</span><span class="p">)</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+</code></pre></div></div>
+
+<p>The only thing we have to do is:</p>
+
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+<span class="k">let</span> <span class="nv">lineStatus</span> <span class="o">=</span> <span class="kt">LineEndPoint</span><span class="o">.</span><span class="nf">lineStatus</span><span class="p">([</span><span class="s">"victoria"</span><span class="p">,</span><span class="s">"piccadilly"</span><span class="p">,</span><span class="s">"central"</span><span class="p">])</span>
+
+<span class="nf">print</span><span class="p">(</span><span class="s">"Line status endpoint: </span><span class="se">\(</span><span class="n">lineStatus</span><span class="o">.</span><span class="n">url</span><span class="se">)</span><span class="s">"</span><span class="p">)</span>
+</code></pre></div></div>
+<p><strong>Output</strong>:</p>
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">Line</span> <span class="n">status</span> <span class="nv">endpoint</span><span class="p">:</span> <span class="nv">https</span><span class="p">:</span><span class="c1">//api.tfl.gov.uk/Line/victoria,piccadilly,central/Status</span>
+</code></pre></div></div>
+
+<p>And that’s it. A fancy and elegant way of getting endpoints.</p>
+
+
+                <div id="post-divider">
+                    <section id="pagination">
+                        
+                        
+                        <a class="pagination-next" href="/2018/08/28/Create-a-pod-in-Cocoapods.html">&laquo; Create a Pod in Cocoapods </a>
+                                
+                    </section>
+                </div>
+            </div>
+
+			</article>    
+    	</div>
+
+	</div>
+    
+	<footer>	
+	<p>&copy; 2018 <a href="mailto:pablo@pablogs.io">Pablo Garcia. </a><a href="https://jekyllrb.com">Powered by Jekyll</a></p>
+</footer>
+
+</body>
+
+</html>
+
+
