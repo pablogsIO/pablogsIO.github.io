@@ -1,10 +1,18 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.7.3">Jekyll</generator><link href="/feed.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2018-11-04T12:21:12+01:00</updated><id>/</id><title type="html">Pablo Garcia - Apps for iPhone, iPad, Apple TV and Apple Watch</title><subtitle>Pablo Garcia - Apps for iPhone, iPad, Apple TV and Apple Watch</subtitle><entry><title type="html">Level Indicators</title><link href="/2018/10/31/Level-Indicators.html" rel="alternate" type="text/html" title="Level Indicators" /><published>2018-10-31T00:00:00+01:00</published><updated>2018-10-31T00:00:00+01:00</updated><id>/2018/10/31/Level%20Indicators</id><content type="html" xml:base="/2018/10/31/Level-Indicators.html">&lt;p&gt;I have no idea about design, but I think I can appreciate beautiful ones. And that what happened when I saw &lt;a href=&quot;https://www.instagram.com/uxmobile/&quot;&gt;UX mobile instagram account&lt;/a&gt; … and I felt in love with this one:&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.7.3">Jekyll</generator><link href="/feed.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2018-11-04T12:28:30+01:00</updated><id>/</id><title type="html">Pablo Garcia - Apps for iPhone, iPad, Apple TV and Apple Watch</title><subtitle>Pablo Garcia - Apps for iPhone, iPad, Apple TV and Apple Watch</subtitle><entry><title type="html">Level Indicators</title><link href="/2018/10/31/Level-Indicators.html" rel="alternate" type="text/html" title="Level Indicators" /><published>2018-10-31T00:00:00+01:00</published><updated>2018-10-31T00:00:00+01:00</updated><id>/2018/10/31/Level%20Indicators</id><content type="html" xml:base="/2018/10/31/Level-Indicators.html">&lt;p&gt;I have no idea about design, but I think I can appreciate beautiful ones. And that what happened when I saw &lt;a href=&quot;https://www.instagram.com/uxmobile/&quot;&gt;UX mobile instagram account&lt;/a&gt; … and I felt in love with this one:&lt;/p&gt;
 
 &lt;p align=&quot;center&quot;&gt;
   &lt;img width=&quot;400&quot; src=&quot;/images/indicator.png&quot; /&gt;
 &lt;/p&gt;
 
 &lt;p&gt;So I decided to do a swift control, and here is the result.&lt;/p&gt;
+
+&lt;p align=&quot;center&quot;&gt;
+  &lt;img width=&quot;400&quot; src=&quot;/images/pglevelindicator.gif&quot; /&gt;
+&lt;/p&gt;
+
+&lt;p&gt;You have a fully example at my &lt;a href=&quot;https://github.com/pablogsIO/PGLevelIndicator&quot;&gt;Github&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;It’s very easy to use:&lt;/p&gt;
 
 &lt;ul&gt;
   &lt;li&gt;Create an array of parameters:&lt;/li&gt;
@@ -30,12 +38,6 @@
 
 &lt;div class=&quot;language-swift highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;view&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;addSubview&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;levelIndicator&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;!&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;And here you have an example:&lt;/p&gt;
-
-&lt;p align=&quot;center&quot;&gt;
-  &lt;img width=&quot;400&quot; src=&quot;/images/pglevelindicator.gif&quot; /&gt;
-&lt;/p&gt;
 
 &lt;p&gt;Thanks for reading!!!&lt;/p&gt;</content><author><name></name></author><summary type="html">I have no idea about design, but I think I can appreciate beautiful ones. And that what happened when I saw UX mobile instagram account … and I felt in love with this one:</summary></entry><entry><title type="html">Fun with enums (Fun with flags)</title><link href="/2018/09/23/Fun-with-Enums.html" rel="alternate" type="text/html" title="Fun with enums (Fun with flags)" /><published>2018-09-23T00:00:00+02:00</published><updated>2018-09-23T00:00:00+02:00</updated><id>/2018/09/23/Fun%20with%20Enums</id><content type="html" xml:base="/2018/09/23/Fun-with-Enums.html">&lt;h2 id=&quot;fun-with-enums---api-endpoint&quot;&gt;Fun with Enums - API Endpoint&lt;/h2&gt;
 
