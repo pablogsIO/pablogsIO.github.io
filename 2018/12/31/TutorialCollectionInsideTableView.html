@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name = "viewport" content = "width = 1200">
+	<link href='https://fonts.googleapis.com/css?family=PT+Sans+Caption:400,700' rel='stylesheet' type='text/css'>
+	<link rel="stylesheet" href="/styles.css" />
+	<link rel="stylesheet" href="/highlightswift.css" />
+	<title>Pablo Apps - Apps for iPhone, iPad and Apple TV</title>
+</head>
+
+<body>
+	<div id="wrapper">
+	<header>
+	
+
+<table>
+    <tr>
+        <td class="d1">
+            <hgroup>
+				<h1><a href="/">Pablo Garcia</a></h1>
+				<h2>Apps for iPhone, iPad, Apple TV and Apple Watch</h2>
+			</hgroup>
+        </td>
+        
+        <td class="d3">
+			<nav>
+				<ul>
+					<li><a href="/">Home</a></li>
+					<li><a href="/blog/">Blog</a></li>
+					<li><a href="/contact/">Contact</a></li>
+				</ul>
+				
+			</nav>
+        </td>
+        
+    </tr>
+</table>
+
+</header>
+
+	
+		
+    <div id="content">
+    	<div id="post">
+    		<article>
+                <div>
+    			<header>
+    				<h1>Tutorial - UICollectionView inside TableViewCell</h1>
+    				<time>December 31, 2018
+                </time>
+    			</header>
+
+				<p>And here we are, last hours of 2018 and I’m writing the last post of the year, hope you like it.</p>
+
+<p>Throughout this tutorial I’ll try to explain how to insert an UICollectionView in a TableViewCell. Each TableViewCell will have the name of the band and a CollectionView with the members of the band. I am assuming that you have read this <a href="https://pablogs.io/2018/11/30/TutorialTableViewXIB.html">post</a>. Here is the result</p>
+
+<p align="center">
+  <img width="400" src="/images/posts/collectiontableview/result.png" />
+</p>
+
+<h3 id="create-the-project">Create the project</h3>
+
+<ul>
+  <li>Open Xcode and create a Single View App.</li>
+  <li>First of all we are going to create our model (we have created createModel() function to populate data).</li>
+</ul>
+
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">struct</span> <span class="kt">Band</span> <span class="p">{</span>
+    <span class="k">var</span> <span class="nv">name</span><span class="p">:</span> <span class="kt">String</span>
+    <span class="k">var</span> <span class="nv">image</span><span class="p">:</span> <span class="kt">UIImageView</span>
+    <span class="k">var</span> <span class="nv">members</span><span class="p">:</span> <span class="p">[</span><span class="kt">String</span><span class="p">]</span>
+<span class="p">}</span>
+</code></pre></div></div>
+<ul>
+  <li>Open Main.storyboard file</li>
+  <li>Drag and drop an UITableView</li>
+  <li>Drag and drop an UITableViewCell</li>
+  <li>Select the Main.storyboard file and press Show assistant editor button.</li>
+  <li>Create the tableView IBOutlet in your ViewController</li>
+</ul>
+
+<h3 id="create-xib-file">Create XIB file</h3>
+
+<ul>
+  <li>Create a new User interface file. File-&gt; New File and name it BandCell.</li>
+</ul>
+
+<p align="center">
+  <img width="600" src="/images/posts/customcells/step5.png" />
+</p>
+
+<ul>
+  <li>Drop an UITableViewCell</li>
+</ul>
+
+<p align="center">
+  <img width="600" src="/images/posts/customcells/step6.png" />
+</p>
+
+<ul>
+  <li>Insert a UILabel (rock band name) and a UICollectionView (for members of the band) at the right of the UILabel</li>
+</ul>
+
+<p align="center">
+  <img width="600" src="/images/posts/collectiontableview/step9.png" />
+</p>
+
+<h3 id="create-the-bandcell-class">Create the BandCell class</h3>
+
+<ul>
+  <li>Create a new Cocoa Touch class and name it BandCell</li>
+  <li>In the BandCell.xib file
+    <ul>
+      <li>open the Identity Inspector tab and in custom class type <strong>BandCell</strong>.</li>
+      <li>open the Attribute inspector tab and in Identifier type <strong>BandCellId</strong></li>
+    </ul>
+  </li>
+</ul>
+
+<p align="center">
+  <img width="300" src="/images/posts/customcells/step7.png" />
+  <img width="300" src="/images/posts/customcells/step8.png" />
+</p>
+
+<ul>
+  <li>Create IBOutlets in BandCell class for UILabel and UICollectionView</li>
+</ul>
+
+<p align="center">
+  <img width="800" src="/images/posts/collectiontableview/step10.png" />
+</p>
+
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">@IBOutlet</span> <span class="k">weak</span> <span class="k">var</span> <span class="nv">bandName</span><span class="p">:</span> <span class="kt">UILabel</span><span class="o">!</span>
+<span class="kd">@IBOutlet</span> <span class="k">weak</span> <span class="k">var</span> <span class="nv">collectionView</span><span class="p">:</span> <span class="kt">UICollectionView</span><span class="o">!</span>
+</code></pre></div></div>
+
+<ul>
+  <li>Add a function to configure the data</li>
+</ul>
+
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">configureCell</span><span class="p">(</span><span class="nv">band</span><span class="p">:</span> <span class="kt">Band</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">self</span><span class="o">.</span><span class="n">bandName</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="n">band</span><span class="o">.</span><span class="n">name</span>
+        <span class="k">self</span><span class="o">.</span><span class="n">members</span> <span class="o">=</span> <span class="n">band</span><span class="o">.</span><span class="n">members</span>
+    <span class="p">}</span>
+</code></pre></div></div>
+
+<h3 id="configure-tableview-and-tableviews-delegate-and-datasource">Configure tableView, and tableview’s delegate and datasource</h3>
+
+<ul>
+  <li>Register the BandCell nib and create UITableViewDataSource functions</li>
+</ul>
+
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">override</span> <span class="kd">func</span> <span class="nf">viewDidLoad</span><span class="p">()</span> <span class="p">{</span>
+        <span class="k">super</span><span class="o">.</span><span class="nf">viewDidLoad</span><span class="p">()</span>
+        <span class="n">tableView</span><span class="o">.</span><span class="n">delegate</span> <span class="o">=</span> <span class="k">self</span>
+        <span class="n">tableView</span><span class="o">.</span><span class="n">dataSource</span> <span class="o">=</span> <span class="k">self</span>
+        <span class="n">tableView</span><span class="o">.</span><span class="nf">register</span><span class="p">(</span><span class="kt">UINib</span><span class="o">.</span><span class="nf">init</span><span class="p">(</span><span class="nv">nibName</span><span class="p">:</span> <span class="s">"BandCell"</span><span class="p">,</span> <span class="nv">bundle</span><span class="p">:</span> <span class="kc">nil</span><span class="p">),</span> <span class="nv">forCellReuseIdentifier</span><span class="p">:</span> <span class="s">"BandCellId"</span><span class="p">)</span>
+        <span class="n">tableView</span><span class="o">.</span><span class="n">tableFooterView</span> <span class="o">=</span> <span class="kt">UIView</span><span class="p">()</span>
+    <span class="p">}</span>
+</code></pre></div></div>
+
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">extension</span> <span class="kt">ViewController</span><span class="p">:</span> <span class="kt">UITableViewDataSource</span> <span class="p">{</span>
+  <span class="kd">func</span> <span class="nf">tableView</span><span class="p">(</span><span class="n">_</span> <span class="nv">tableView</span><span class="p">:</span> <span class="kt">UITableView</span><span class="p">,</span> <span class="n">numberOfRowsInSection</span> <span class="nv">section</span><span class="p">:</span> <span class="kt">Int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Int</span> <span class="p">{</span>
+      <span class="k">return</span> <span class="n">model</span><span class="o">.</span><span class="n">count</span>
+  <span class="p">}</span>
+
+  <span class="kd">func</span> <span class="nf">tableView</span><span class="p">(</span><span class="n">_</span> <span class="nv">tableView</span><span class="p">:</span> <span class="kt">UITableView</span><span class="p">,</span> <span class="n">cellForRowAt</span> <span class="nv">indexPath</span><span class="p">:</span> <span class="kt">IndexPath</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">UITableViewCell</span> <span class="p">{</span>
+
+      <span class="k">let</span> <span class="nv">cell</span> <span class="o">=</span> <span class="n">tableView</span><span class="o">.</span><span class="nf">dequeueReusableCell</span><span class="p">(</span><span class="nv">withIdentifier</span><span class="p">:</span> <span class="s">"BandCellId"</span><span class="p">)</span> <span class="k">as!</span> <span class="kt">BandCell</span>
+
+      <span class="n">cell</span><span class="o">.</span><span class="nf">configureCell</span><span class="p">(</span><span class="nv">band</span><span class="p">:</span> <span class="n">model</span><span class="p">[</span><span class="n">indexPath</span><span class="o">.</span><span class="n">row</span><span class="p">])</span>
+
+      <span class="k">return</span> <span class="n">cell</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+
+</code></pre></div></div>
+
+<h3 id="configure-collectionview-and-collectionviews-datasource">Configure collectionView, and collectionView’s datasource</h3>
+
+<p>Now it’s time for our collectionView. In our BandCell class we have an UICollectionView and we have to do the same process as we did with our tableView. We are going to create a MembersCVCell.swift and a MembersCVCell.xib.</p>
+
+<ul>
+  <li>MembersCVCell.xib will have a UILabel</li>
+  <li>MembersCVCell.swift will extend UICollectionViewCell and an IBOutlet, just like this</li>
+</ul>
+
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="kt">MembersCVCell</span><span class="p">:</span> <span class="kt">UICollectionViewCell</span> <span class="p">{</span>
+
+    <span class="kd">@IBOutlet</span> <span class="k">weak</span> <span class="k">var</span> <span class="nv">bandMember</span><span class="p">:</span> <span class="kt">UILabel</span><span class="o">!</span>
+
+    <span class="kd">func</span> <span class="nf">configureCell</span><span class="p">(</span><span class="nv">bandMember</span><span class="p">:</span> <span class="kt">String</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">self</span><span class="o">.</span><span class="n">bandMember</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="n">bandMember</span>
+    <span class="p">}</span>
+
+<span class="p">}</span>
+</code></pre></div></div>
+<ul>
+  <li>In BandCell.swift we have to setup the collectionView and UICollectionViewDataSource functions</li>
+</ul>
+
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="k">override</span> <span class="kd">func</span> <span class="nf">awakeFromNib</span><span class="p">()</span> <span class="p">{</span>
+        <span class="k">super</span><span class="o">.</span><span class="nf">awakeFromNib</span><span class="p">()</span>
+        <span class="k">self</span><span class="o">.</span><span class="n">collectionView</span><span class="o">.</span><span class="nf">register</span><span class="p">(</span><span class="kt">UINib</span><span class="p">(</span><span class="nv">nibName</span><span class="p">:</span> <span class="s">"MembersCVCell"</span><span class="p">,</span> <span class="nv">bundle</span><span class="p">:</span> <span class="kc">nil</span><span class="p">),</span> <span class="nv">forCellWithReuseIdentifier</span><span class="p">:</span> <span class="s">"MembersId"</span><span class="p">)</span>
+        <span class="n">collectionView</span><span class="o">.</span><span class="n">delegate</span> <span class="o">=</span> <span class="k">self</span>
+        <span class="n">collectionView</span><span class="o">.</span><span class="n">dataSource</span> <span class="o">=</span> <span class="k">self</span>
+    <span class="p">}</span>
+</code></pre></div></div>
+
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="kd">extension</span> <span class="kt">BandCell</span><span class="p">:</span> <span class="kt">UICollectionViewDelegate</span><span class="p">,</span> <span class="kt">UICollectionViewDataSource</span> <span class="p">{</span>
+    <span class="kd">func</span> <span class="nf">collectionView</span><span class="p">(</span><span class="n">_</span> <span class="nv">collectionView</span><span class="p">:</span> <span class="kt">UICollectionView</span><span class="p">,</span> <span class="n">numberOfItemsInSection</span> <span class="nv">section</span><span class="p">:</span> <span class="kt">Int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Int</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="n">members</span><span class="o">.</span><span class="n">count</span>
+    <span class="p">}</span>
+
+    <span class="kd">func</span> <span class="nf">collectionView</span><span class="p">(</span><span class="n">_</span> <span class="nv">collectionView</span><span class="p">:</span> <span class="kt">UICollectionView</span><span class="p">,</span> <span class="n">cellForItemAt</span> <span class="nv">indexPath</span><span class="p">:</span> <span class="kt">IndexPath</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">UICollectionViewCell</span> <span class="p">{</span>
+        <span class="k">let</span> <span class="nv">cell</span> <span class="o">=</span> <span class="n">collectionView</span><span class="o">.</span><span class="nf">dequeueReusableCell</span><span class="p">(</span><span class="nv">withReuseIdentifier</span><span class="p">:</span> <span class="s">"MembersId"</span><span class="p">,</span> <span class="nv">for</span><span class="p">:</span> <span class="n">indexPath</span><span class="p">)</span> <span class="k">as!</span> <span class="kt">MembersCVCell</span>
+
+        <span class="n">cell</span><span class="o">.</span><span class="nf">configureCell</span><span class="p">(</span><span class="nv">bandMember</span><span class="p">:</span> <span class="n">members</span><span class="p">[</span><span class="n">indexPath</span><span class="o">.</span><span class="n">row</span><span class="p">])</span>
+
+        <span class="k">return</span> <span class="n">cell</span>
+    <span class="p">}</span>
+
+
+<span class="p">}</span>
+</code></pre></div></div>
+<p>And thats all. Pretty easy, isn’t it? here is the <a href="/images/posts/collectiontableview/CollectionInsideTable.zip">code</a></p>
+
+<h3 id="merry-christmas-and-happy-new-year">Merry Christmas and Happy New Year!!!</h3>
+
+
+                <div id="post-divider">
+                    <section id="pagination">
+                        
+                        
+                        <a class="pagination-next" href="/2018/11/30/TutorialTableViewXIB.html">&laquo; Tutorial - Custom Cells with XIB </a>
+                                
+                    </section>
+                </div>
+            </div>
+
+			</article>    
+    	</div>
+
+	</div>
+    
+	<footer>	
+	<p>&copy; 2018 <a href="mailto:pablo@pablogs.io">Pablo Garcia. </a><a href="https://jekyllrb.com">Powered by Jekyll</a></p>
+</footer>
+
+</body>
+
+</html>
+
+
