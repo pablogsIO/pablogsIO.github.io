@@ -1,4 +1,30 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.7.3">Jekyll</generator><link href="/feed.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2019-01-21T22:01:27+01:00</updated><id>/</id><title type="html">Pablo Garcia - Apps for iPhone, iPad, Apple TV and Apple Watch</title><subtitle>Pablo Garcia - Apps for iPhone, iPad, Apple TV and Apple Watch</subtitle><entry><title type="html">Tutorial - UICollectionView inside TableViewCell</title><link href="/2018/12/31/TutorialCollectionInsideTableView.html" rel="alternate" type="text/html" title="Tutorial - UICollectionView inside TableViewCell" /><published>2018-12-31T00:00:00+01:00</published><updated>2018-12-31T00:00:00+01:00</updated><id>/2018/12/31/TutorialCollectionInsideTableView</id><content type="html" xml:base="/2018/12/31/TutorialCollectionInsideTableView.html">&lt;p&gt;And here we are, last hours of 2018 and I’m writing the last post of the year, hope you like it.&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.7.3">Jekyll</generator><link href="/feed.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2019-01-31T22:56:09+01:00</updated><id>/</id><title type="html">Pablo Garcia - Apps for iPhone, iPad, Apple TV and Apple Watch</title><subtitle>Pablo Garcia - Apps for iPhone, iPad, Apple TV and Apple Watch</subtitle><entry><title type="html">Quadtree and Map Clustering - I</title><link href="/2019/01/23/MapClusteringI.html" rel="alternate" type="text/html" title="Quadtree and Map Clustering - I" /><published>2019-01-23T00:00:00+01:00</published><updated>2019-01-23T00:00:00+01:00</updated><id>/2019/01/23/MapClusteringI</id><content type="html" xml:base="/2019/01/23/MapClusteringI.html">&lt;p&gt;Nowadays, lot of apps use maps to show some information, great apps like &lt;a href=&quot;https://itunes.apple.com/es/app/coffee-near-me/id683874335?mt=8&quot;&gt;Starbucks Near Me&lt;/a&gt;, &lt;a href=&quot;https://itunes.apple.com/bz/app/luas-dublin/id1257004479?l=en&amp;amp;mt=8&quot;&gt;Luas Dublin&lt;/a&gt; etc. But, what happen if there are a lot of annotations to show? probably we’d face up something like this.&lt;/p&gt;
+
+&lt;p align=&quot;center&quot;&gt;
+  &lt;img width=&quot;300&quot; src=&quot;/images/posts/clustering/iPhone.png&quot; /&gt;
+&lt;/p&gt;
+
+&lt;p&gt;Really annoying, isn’t it? This map is crowded and it’s very difficult to get significant information from it.&lt;/p&gt;
+
+&lt;p&gt;One way to solve this problem is by grouping points that are at a certain distance from each other on the screen. At a low zoom levels (like the image shown above) we’ll show a few groups of points and at a high zoom levels more groups.&lt;/p&gt;
+
+&lt;p align=&quot;center&quot;&gt;
+  &lt;img width=&quot;300&quot; src=&quot;/images/posts/clustering/low.png&quot; /&gt;
+  &lt;img width=&quot;300&quot; src=&quot;/images/posts/clustering/high.png&quot; /&gt;
+&lt;/p&gt;
+
+&lt;p&gt;This technique is called &lt;strong&gt;Clustering&lt;/strong&gt;. Clustering is the task of grouping a set of objects in such a way that objects in the same group (called a cluster) are more similar (in some sense, i.e. distance) to each other than to those in other groups (clusters).&lt;/p&gt;
+
+&lt;p&gt;Basically this is a search problem, we’ll need to find all the points which lie in different regions of the map to create groups of points. QuadTree is a data structure that can efficiently find all locations contained in a specific region. It’s built by recursively subdividing a two-dimensional space into smaller regions.&lt;/p&gt;
+
+&lt;p&gt;Here you can see a QuadTree in action.&lt;/p&gt;
+
+&lt;p align=&quot;center&quot;&gt;
+  &lt;img width=&quot;500&quot; src=&quot;/images/posts/clustering/quadtreeinsertion.gif&quot; /&gt;
+
+&lt;/p&gt;
+
+&lt;h3 id=&quot;benchmarks&quot;&gt;Benchmarks&lt;/h3&gt;</content><author><name></name></author><summary type="html">Nowadays, lot of apps use maps to show some information, great apps like Starbucks Near Me, Luas Dublin etc. But, what happen if there are a lot of annotations to show? probably we’d face up something like this.</summary></entry><entry><title type="html">Tutorial - UICollectionView inside TableViewCell</title><link href="/2018/12/31/TutorialCollectionInsideTableView.html" rel="alternate" type="text/html" title="Tutorial - UICollectionView inside TableViewCell" /><published>2018-12-31T00:00:00+01:00</published><updated>2018-12-31T00:00:00+01:00</updated><id>/2018/12/31/TutorialCollectionInsideTableView</id><content type="html" xml:base="/2018/12/31/TutorialCollectionInsideTableView.html">&lt;p&gt;And here we are, last hours of 2018 and I’m writing the last post of the year, hope you like it.&lt;/p&gt;
 
 &lt;p&gt;Throughout this tutorial I’ll try to explain how to insert an UICollectionView in a TableViewCell. Each TableViewCell will have the name of the band and a CollectionView with the members of the band. I am assuming that you have read this &lt;a href=&quot;https://pablogs.io/2018/11/30/TutorialTableViewXIB.html&quot;&gt;post&lt;/a&gt;. Here is the result&lt;/p&gt;
 

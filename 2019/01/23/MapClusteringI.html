@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name = "viewport" content = "width = 1200">
+	<link href='https://fonts.googleapis.com/css?family=PT+Sans+Caption:400,700' rel='stylesheet' type='text/css'>
+	<link rel="stylesheet" href="/styles.css" />
+	<link rel="stylesheet" href="/highlightswift.css" />
+	<title>Pablo Apps - Apps for iPhone, iPad and Apple TV</title>
+</head>
+
+<body>
+	<div id="wrapper">
+	<header>
+	
+
+<table>
+    <tr>
+        <td class="d1">
+            <hgroup>
+				<h1><a href="/">Pablo Garcia</a></h1>
+				<h2>Apps for iPhone, iPad, Apple TV and Apple Watch</h2>
+			</hgroup>
+        </td>
+        
+        <td class="d3">
+			<nav>
+				<ul>
+					<li><a href="/">Home</a></li>
+					<li><a href="/blog/">Blog</a></li>
+					<li><a href="/contact/">Contact</a></li>
+				</ul>
+				
+			</nav>
+        </td>
+        
+    </tr>
+</table>
+
+</header>
+
+	
+		
+    <div id="content">
+    	<div id="post">
+    		<article>
+                <div>
+    			<header>
+    				<h1>Quadtree and Map Clustering - I</h1>
+    				<time>January 23, 2019
+                </time>
+    			</header>
+
+				<p>Nowadays, lot of apps use maps to show some information, great apps like <a href="https://itunes.apple.com/es/app/coffee-near-me/id683874335?mt=8">Starbucks Near Me</a>, <a href="https://itunes.apple.com/bz/app/luas-dublin/id1257004479?l=en&amp;mt=8">Luas Dublin</a> etc. But, what happen if there are a lot of annotations to show? probably we’d face up something like this.</p>
+
+<p align="center">
+  <img width="300" src="/images/posts/clustering/iPhone.png" />
+</p>
+
+<p>Really annoying, isn’t it? This map is crowded and it’s very difficult to get significant information from it.</p>
+
+<p>One way to solve this problem is by grouping points that are at a certain distance from each other on the screen. At a low zoom levels (like the image shown above) we’ll show a few groups of points and at a high zoom levels more groups.</p>
+
+<p align="center">
+  <img width="300" src="/images/posts/clustering/low.png" />
+  <img width="300" src="/images/posts/clustering/high.png" />
+</p>
+
+<p>This technique is called <strong>Clustering</strong>. Clustering is the task of grouping a set of objects in such a way that objects in the same group (called a cluster) are more similar (in some sense, i.e. distance) to each other than to those in other groups (clusters).</p>
+
+<p>Basically this is a search problem, we’ll need to find all the points which lie in different regions of the map to create groups of points. QuadTree is a data structure that can efficiently find all locations contained in a specific region. It’s built by recursively subdividing a two-dimensional space into smaller regions.</p>
+
+<p>Here you can see a QuadTree in action.</p>
+
+<p align="center">
+  <img width="500" src="/images/posts/clustering/quadtreeinsertion.gif" />
+
+</p>
+
+<h3 id="benchmarks">Benchmarks</h3>
+
+
+                <div id="post-divider">
+                    <section id="pagination">
+                        
+                        
+                        <a class="pagination-next" href="/2018/12/31/TutorialCollectionInsideTableView.html">&laquo; Tutorial - UICollectionView inside TableViewCell </a>
+                                
+                    </section>
+                </div>
+            </div>
+
+			</article>    
+    	</div>
+
+	</div>
+    
+	<footer>	
+	<p>&copy; 2018 <a href="mailto:pablo@pablogs.io">Pablo Garcia. </a><a href="https://jekyllrb.com">Powered by Jekyll</a></p>
+</footer>
+
+</body>
+
+</html>
+
+
