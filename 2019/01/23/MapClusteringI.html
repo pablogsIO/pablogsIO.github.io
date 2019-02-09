@@ -70,12 +70,77 @@
 
 <p>Basically this is a search problem, we’ll need to find all the points which lie in different regions of the map to create groups of points. QuadTree is a data structure that can efficiently find all locations contained in a specific region. It’s built by recursively subdividing a two-dimensional space into smaller regions.</p>
 
-<p>Here you can see a QuadTree in action.</p>
+<h3 id="quadtree">QuadTree</h3>
+
+<p>Each node of the QuadTree will have a list of points (in that node), the capacity and a bounding box. When we insert a new point in the QuadTree, first we check if the node’s bounding box contains the coordinates of the new point, if so, we check if the node is full. If not, we can insert the point, but if the node is full, we have to divide it in four small nodes and try to insert the point in each of this child nodes.</p>
+
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+<span class="kd">class</span> <span class="kt">QuadTree</span> <span class="p">{</span>
+
+    <span class="kd">static</span> <span class="k">let</span> <span class="nv">capacity</span> <span class="o">=</span> <span class="mi">4</span>
+
+    <span class="k">var</span> <span class="nv">points</span> <span class="o">=</span> <span class="p">[</span><span class="kt">CGPoint</span><span class="p">]()</span>
+    <span class="k">var</span> <span class="nv">boundingBox</span> <span class="o">=</span> <span class="kt">CGRect</span><span class="p">()</span>
+    <span class="k">var</span> <span class="nv">isDivided</span> <span class="o">=</span> <span class="kc">false</span>
+
+    <span class="kd">private</span> <span class="k">var</span> <span class="nv">northWest</span><span class="p">:</span> <span class="kt">QuadTree</span><span class="p">?</span>
+    <span class="kd">private</span> <span class="k">var</span> <span class="nv">northEast</span><span class="p">:</span> <span class="kt">QuadTree</span><span class="p">?</span>
+    <span class="kd">private</span> <span class="k">var</span> <span class="nv">southWest</span><span class="p">:</span> <span class="kt">QuadTree</span><span class="p">?</span>
+    <span class="kd">private</span> <span class="k">var</span> <span class="nv">southEast</span><span class="p">:</span> <span class="kt">QuadTree</span><span class="p">?</span>
+
+    <span class="nf">init</span><span class="p">(</span><span class="nv">boundingBox</span><span class="p">:</span> <span class="kt">CGRect</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">self</span><span class="o">.</span><span class="n">boundingBox</span> <span class="o">=</span> <span class="n">boundingBox</span>
+    <span class="p">}</span>
+
+    <span class="kd">public</span> <span class="kd">func</span> <span class="nf">insertPoint</span><span class="p">(</span><span class="nv">newPoint</span><span class="p">:</span> <span class="kt">CGPoint</span><span class="p">)</span> <span class="p">{</span>
+
+        <span class="k">guard</span> <span class="k">self</span><span class="o">.</span><span class="n">boundingBox</span><span class="o">.</span><span class="nf">contains</span><span class="p">(</span><span class="n">newPoint</span><span class="p">)</span> <span class="k">else</span> <span class="p">{</span>
+            <span class="k">return</span>
+        <span class="p">}</span>
+        <span class="k">if</span> <span class="n">points</span><span class="o">.</span><span class="n">count</span> <span class="o">&lt;</span> <span class="kt">QuadTree</span><span class="o">.</span><span class="n">capacity</span> <span class="o">&amp;&amp;</span> <span class="n">northWest</span> <span class="o">==</span> <span class="kc">nil</span> <span class="p">{</span>
+            <span class="n">points</span><span class="o">.</span><span class="nf">append</span><span class="p">(</span><span class="n">newPoint</span><span class="p">)</span>
+        <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+            <span class="k">if</span> <span class="n">northWest</span> <span class="o">==</span> <span class="kc">nil</span> <span class="p">{</span>
+                <span class="k">self</span><span class="o">.</span><span class="nf">subdivide</span><span class="p">()</span>
+            <span class="p">}</span>
+            <span class="n">northWest</span><span class="p">?</span><span class="o">.</span><span class="nf">insertPoint</span><span class="p">(</span><span class="nv">newPoint</span><span class="p">:</span> <span class="n">newPoint</span><span class="p">)</span>
+            <span class="n">northEast</span><span class="p">?</span><span class="o">.</span><span class="nf">insertPoint</span><span class="p">(</span><span class="nv">newPoint</span><span class="p">:</span> <span class="n">newPoint</span><span class="p">)</span>
+            <span class="n">southWest</span><span class="p">?</span><span class="o">.</span><span class="nf">insertPoint</span><span class="p">(</span><span class="nv">newPoint</span><span class="p">:</span> <span class="n">newPoint</span><span class="p">)</span>
+            <span class="n">southEast</span><span class="p">?</span><span class="o">.</span><span class="nf">insertPoint</span><span class="p">(</span><span class="nv">newPoint</span><span class="p">:</span> <span class="n">newPoint</span><span class="p">)</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+    <span class="kd">private</span> <span class="kd">func</span> <span class="nf">subdivide</span><span class="p">()</span> <span class="p">{</span>
+        <span class="k">self</span><span class="o">.</span><span class="n">isDivided</span> <span class="o">=</span> <span class="kc">true</span>
+        <span class="k">let</span> <span class="nv">width</span> <span class="o">=</span> <span class="k">self</span><span class="o">.</span><span class="n">boundingBox</span><span class="o">.</span><span class="n">width</span><span class="o">/</span><span class="mi">2</span>
+        <span class="k">let</span> <span class="nv">height</span> <span class="o">=</span> <span class="k">self</span><span class="o">.</span><span class="n">boundingBox</span><span class="o">.</span><span class="n">height</span><span class="o">/</span><span class="mi">2</span>
+        <span class="k">let</span> <span class="nv">size</span> <span class="o">=</span> <span class="kt">CGSize</span><span class="p">(</span><span class="nv">width</span><span class="p">:</span> <span class="n">width</span><span class="o">-</span><span class="n">offset</span><span class="p">,</span> <span class="nv">height</span><span class="p">:</span> <span class="n">height</span><span class="o">-</span><span class="n">offset</span><span class="p">)</span>
+
+        <span class="k">self</span><span class="o">.</span><span class="n">northWest</span> <span class="o">=</span> <span class="kt">QuadTree</span><span class="p">(</span><span class="nv">boundingBox</span><span class="p">:</span> <span class="kt">CGRect</span><span class="p">(</span><span class="nv">origin</span><span class="p">:</span> <span class="kt">CGPoint</span><span class="p">(</span><span class="nv">x</span><span class="p">:</span> <span class="k">self</span><span class="o">.</span><span class="n">boundingBox</span><span class="o">.</span><span class="n">origin</span><span class="o">.</span><span class="n">x</span><span class="p">,</span>
+                                                                      <span class="nv">y</span><span class="p">:</span> <span class="k">self</span><span class="o">.</span><span class="n">boundingBox</span><span class="o">.</span><span class="n">origin</span><span class="o">.</span><span class="n">y</span><span class="p">),</span>
+                                                      <span class="nv">size</span><span class="p">:</span> <span class="n">size</span><span class="p">))</span>
+        <span class="k">self</span><span class="o">.</span><span class="n">northEast</span> <span class="o">=</span> <span class="kt">QuadTree</span><span class="p">(</span><span class="nv">boundingBox</span><span class="p">:</span> <span class="kt">CGRect</span><span class="p">(</span><span class="nv">origin</span><span class="p">:</span> <span class="kt">CGPoint</span><span class="p">(</span><span class="nv">x</span><span class="p">:</span> <span class="k">self</span><span class="o">.</span><span class="n">boundingBox</span><span class="o">.</span><span class="n">origin</span><span class="o">.</span><span class="n">x</span><span class="o">+</span><span class="n">width</span><span class="p">,</span>
+                                                                      <span class="nv">y</span><span class="p">:</span> <span class="k">self</span><span class="o">.</span><span class="n">boundingBox</span><span class="o">.</span><span class="n">origin</span><span class="o">.</span><span class="n">y</span><span class="p">),</span>
+                                                      <span class="nv">size</span><span class="p">:</span> <span class="n">size</span><span class="p">))</span>
+        <span class="k">self</span><span class="o">.</span><span class="n">southWest</span> <span class="o">=</span> <span class="kt">QuadTree</span><span class="p">(</span><span class="nv">boundingBox</span><span class="p">:</span> <span class="kt">CGRect</span><span class="p">(</span><span class="nv">origin</span><span class="p">:</span> <span class="kt">CGPoint</span><span class="p">(</span><span class="nv">x</span><span class="p">:</span> <span class="k">self</span><span class="o">.</span><span class="n">boundingBox</span><span class="o">.</span><span class="n">origin</span><span class="o">.</span><span class="n">x</span><span class="p">,</span>
+                                                                      <span class="nv">y</span><span class="p">:</span> <span class="k">self</span><span class="o">.</span><span class="n">boundingBox</span><span class="o">.</span><span class="n">origin</span><span class="o">.</span><span class="n">y</span><span class="o">+</span><span class="n">height</span><span class="p">),</span>
+                                                      <span class="nv">size</span><span class="p">:</span> <span class="n">size</span><span class="p">))</span>
+        <span class="k">self</span><span class="o">.</span><span class="n">southEast</span> <span class="o">=</span> <span class="kt">QuadTree</span><span class="p">(</span><span class="nv">boundingBox</span><span class="p">:</span> <span class="kt">CGRect</span><span class="p">(</span><span class="nv">origin</span><span class="p">:</span> <span class="kt">CGPoint</span><span class="p">(</span><span class="nv">x</span><span class="p">:</span> <span class="k">self</span><span class="o">.</span><span class="n">boundingBox</span><span class="o">.</span><span class="n">origin</span><span class="o">.</span><span class="n">x</span><span class="o">+</span><span class="n">width</span><span class="p">,</span>
+                                                                      <span class="nv">y</span><span class="p">:</span> <span class="k">self</span><span class="o">.</span><span class="n">boundingBox</span><span class="o">.</span><span class="n">origin</span><span class="o">.</span><span class="n">y</span><span class="o">+</span><span class="n">height</span><span class="p">),</span>
+                                                      <span class="nv">size</span><span class="p">:</span> <span class="n">size</span><span class="p">))</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+
+
+</code></pre></div></div>
+
+<p>Here you can see my QuadTree in action.</p>
 
 <p align="center">
   <img width="500" src="/images/posts/clustering/quadtreeinsertion.gif" />
 
 </p>
+
+<p>See you in Quadtree and Map Clustering - II</p>
 
 
                 <div id="post-divider">
