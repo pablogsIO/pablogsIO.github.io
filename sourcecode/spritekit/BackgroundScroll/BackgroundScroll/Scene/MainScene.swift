@@ -14,11 +14,6 @@ class MainScene: SKScene {
 
     var backgroundScroll: BackgroundScroll?
     
-    override func sceneDidLoad() {
-        
-        
-    }
-    
     override init(size: CGSize) {
         
         super.init(size: size)

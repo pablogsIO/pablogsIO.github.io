@@ -26,13 +26,13 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "BackgroundScroll/Scene/BackgroundScroll.swift"
-            timestampString = "578262272.716408"
+            timestampString = "578518630.00888"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "19"
             endingLineNumber = "19"
-            landmarkName = "unknown"
-            landmarkType = "0">
+            landmarkName = "init(backgrounds:scene:)"
+            landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -42,11 +42,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "BackgroundScroll/Scene/MainScene.swift"
-            timestampString = "578424237.603055"
+            timestampString = "578518630.013453"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "32"
-            endingLineNumber = "32"
+            startingLineNumber = "27"
+            endingLineNumber = "27"
             landmarkName = "init(size:)"
             landmarkType = "7">
          </BreakpointContent>
