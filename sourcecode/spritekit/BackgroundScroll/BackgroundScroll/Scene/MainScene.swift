@@ -20,15 +20,19 @@ class MainScene: SKScene {
         
         self.initFirstApproach()
         
+        
     }
     
+    override func update(_ currentTime: TimeInterval) {
+        
+    }
     
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 
     override func didMove(to view: SKView) {
-        print("pablogsio: \(#function)")
+
     }
 
 }
@@ -47,8 +51,7 @@ extension MainScene {
         addChild(line)
         
     }
-    
-    private func initFirstApproach() {
+    private func createNodes() {
 
         var nodes = [SKSpriteNode]()
         let background1 = SKSpriteNode(imageNamed: "background_1")
@@ -62,9 +65,14 @@ extension MainScene {
         nodes.append(background4)
         
         self.backgroundScroll = BackgroundScroll(backgrounds: nodes, scene: self)!
-        backgroundScroll?.scrollRight()
+    }
+    
+    private func initFirstApproach() {
+
+        self.createNodes()
+        self.backgroundScroll?.scrollRight()
         
-        let fakeScreenWidth = background1.frame.width+background2.frame.width+background3.frame.width
+        let fakeScreenWidth: CGFloat = 200
         
         drawLine(start: CGPoint(x: 0, y: self.frame.height/2), end: CGPoint(x: self.frame.width, y: self.frame.height/2),color: SKColor.blue)
         drawLine(start: CGPoint(x: self.frame.width/2, y: 0), end: CGPoint(x: self.frame.width/2, y: self.frame.height),color: SKColor.red)
