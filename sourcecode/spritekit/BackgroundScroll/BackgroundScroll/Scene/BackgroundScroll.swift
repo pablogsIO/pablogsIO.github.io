@@ -8,22 +8,33 @@
 
 import SpriteKit
 
+enum Implementation {
+    case actions
+    case linkedlist
+}
+
 class BackgroundScroll {
     
     private let backgrounds: [SKSpriteNode]
+    private var linkedBackgrounds = LinkedList<SKSpriteNode>()
+    
     private unowned let scene: SKScene
     private let speed: CGFloat = 25
     private var totalWidth: CGFloat = 0
 
-    init?(backgrounds: [SKSpriteNode], scene: SKScene){
-        guard backgrounds.count > 1 else {
+    init?(sprites: [SKSpriteNode], scene: SKScene, implementation: Implementation){
+        guard sprites.count > 1 else {
             print("You have to include at least two backgrounds")
             return nil
         }
         self.scene = scene
-        self.backgrounds = backgrounds
-        addBackgroundsToSceneAndCalculateTotalWidth()
-
+        self.backgrounds = sprites
+        switch implementation {
+        case .actions:
+            addBackgroundsToSceneAndCalculateTotalWidth()
+        case .linkedlist:
+            createLinkedList()
+        }
     }
 
     private func addBackgroundsToSceneAndCalculateTotalWidth() {
@@ -31,6 +42,18 @@ class BackgroundScroll {
         for background in backgrounds {
             self.scene.addChild(background)
             totalWidth+=background.frame.width
+        }
+    }
+    
+    private func createLinkedList() {
+        var offset: CGFloat = 0
+        let xOrigin = self.scene.frame.width/2
+        
+        for sprite in backgrounds {
+            sprite.position = CGPoint(x: xOrigin+offset+sprite.frame.width/2, y: self.scene.frame.height/2)
+            linkedBackgrounds.append(sprite)
+            self.scene.addChild(sprite)
+            offset += sprite.size.width
         }
     }
 
@@ -49,5 +72,18 @@ class BackgroundScroll {
             node.run(SKAction.sequence([actionMoveOutsideScene, SKAction.repeatForever(SKAction.sequence([actionMoveToLastPosition,actionMoveRightToLeft]))]))
         }
     }
+    
+    public func update(deltaTime: TimeInterval) {
+        
+        let v: CGFloat = 10
+        print("pablogsio: deltaTime \(deltaTime)  - \(CGFloat(deltaTime)*v)")
+        
+        if let head = linkedBackgrounds.head?.value {
+            head.position = CGPoint(x: head.position.x-CGFloat(deltaTime)*v, y: head.position.y)
+            print("pablogsio: position \(head.position)")
+            linkedBackgrounds.head?.next?.value.position = CGPoint(x: head.position.x+head.frame.width, y: head.position.y)
+        }
+    }
+
     
 }
