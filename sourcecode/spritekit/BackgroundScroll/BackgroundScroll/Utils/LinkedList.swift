@@ -6,8 +6,6 @@
 //  Copyright © 2019 Pablo Garcia. All rights reserved.
 //
 
-
-
 public final class LinkedList<T> {
     
     public class Node<T> {

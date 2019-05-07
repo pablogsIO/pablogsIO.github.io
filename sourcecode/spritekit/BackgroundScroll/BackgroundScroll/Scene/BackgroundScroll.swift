@@ -51,7 +51,7 @@ class BackgroundScroll {
         
         for sprite in backgrounds {
             sprite.position = CGPoint(x: xOrigin+offset+sprite.frame.width/2, y: self.scene.frame.height/2)
-            linkedBackgrounds.append(sprite)
+            linkedBackgrounds.append(value: sprite)
             self.scene.addChild(sprite)
             offset += sprite.size.width
         }
@@ -75,15 +75,28 @@ class BackgroundScroll {
     
     public func update(deltaTime: TimeInterval) {
         
-        let v: CGFloat = 10
-        print("pablogsio: deltaTime \(deltaTime)  - \(CGFloat(deltaTime)*v)")
-        
-        if let head = linkedBackgrounds.head?.value {
-            head.position = CGPoint(x: head.position.x-CGFloat(deltaTime)*v, y: head.position.y)
-            print("pablogsio: position \(head.position)")
-            linkedBackgrounds.head?.next?.value.position = CGPoint(x: head.position.x+head.frame.width, y: head.position.y)
+
+        guard !linkedBackgrounds.isEmpty else {
+            return
         }
+        let v: CGFloat = 10
+
+        if let head = linkedBackgrounds.first {
+            let headSprite = head.value
+            headSprite.position = CGPoint(x: headSprite.position.x-CGFloat(deltaTime)*v, y: headSprite.position.y)
+            var node = linkedBackgrounds.first
+            while node?.next != nil {
+                
+                let previous = node
+                node = node?.next
+                node?.value.position = CGPoint(x: (previous?.value.position.x)!+(previous?.value.frame.width)!, y: (previous?.value.position.y)!)
+            }
+        }
+
     }
 
+//    private func spriteIsOutOfBounds(sprite: SKSpriteNode) -> Bool {
+//
+//    }
     
 }
