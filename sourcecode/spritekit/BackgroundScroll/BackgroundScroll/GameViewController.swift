@@ -14,12 +14,12 @@ class GameViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+
         if let view = self.view as! SKView? {
             let mainScene = MainScene(size: CGSize(width: 1920, height: 1080))
             mainScene.scaleMode = .aspectFit
             view.presentScene(mainScene)
-            
+
             view.ignoresSiblingOrder = true
             view.showsFPS = true
             view.showsNodeCount = true

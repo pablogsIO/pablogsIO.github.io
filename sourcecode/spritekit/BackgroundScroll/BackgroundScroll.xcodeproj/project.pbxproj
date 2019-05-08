@@ -99,6 +99,7 @@
 				6E51A30E2270BF8300366AE9 /* Sources */,
 				6E51A30F2270BF8300366AE9 /* Frameworks */,
 				6E51A3102270BF8300366AE9 /* Resources */,
+				6E5608F4228352A000E630B3 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -121,6 +122,7 @@
 				TargetAttributes = {
 					6E51A3112270BF8300366AE9 = {
 						CreatedOnToolsVersion = 10.1;
+						LastSwiftMigration = 1020;
 					};
 				};
 			};
@@ -154,6 +156,26 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		6E5608F4228352A000E630B3 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "if which swiftlint >/dev/null; then\nswiftlint\nelse\necho \"warning: SwiftLint not installed, download from https://github.com/realm/SwiftLint\"\nfi\n";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		6E51A30E2270BF8300366AE9 /* Sources */ = {
@@ -319,7 +341,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = io.pablogs.BackgroundScroll;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 4.2;
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -337,7 +359,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = io.pablogs.BackgroundScroll;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 4.2;
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
