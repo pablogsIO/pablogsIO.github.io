@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name = "viewport" content = "width = 1200">
+	<link href='https://fonts.googleapis.com/css?family=PT+Sans+Caption:400,700' rel='stylesheet' type='text/css'>
+	<link rel="stylesheet" href="/styles.css" />
+	<link rel="stylesheet" href="/highlightswift.css" />
+	<title>Pablo Apps - Apps for iPhone, iPad and Apple TV</title>
+</head>
+
+<body>
+	<div id="wrapper">
+	<header>
+	
+
+<table>
+    <tr>
+        <td class="d1">
+            <hgroup>
+				<h1><a href="/">Pablo Garcia</a></h1>
+				<h2>Apps for iPhone, iPad, Apple TV and Apple Watch</h2>
+			</hgroup>
+        </td>
+        
+        <td class="d3">
+			<nav>
+				<ul>
+					<li><a href="/">Home</a></li>
+					<li><a href="/blog/">Blog</a></li>
+					<li><a href="/contact/">Contact</a></li>
+				</ul>
+				
+			</nav>
+        </td>
+        
+    </tr>
+</table>
+
+</header>
+
+	
+		
+    <div id="content">
+    	<div id="post">
+    		<article>
+                <div>
+    			<header>
+    				<h1>Spritekit - Background Scrolling - II</h1>
+    				<time>June 30, 2019
+                </time>
+    			</header>
+
+				<p>So, once we’ve achieved background scrolling (to the right), we are going to move forward and do this:</p>
+
+<ul>
+  <li>Detect when the user touch the right/left side of the screen</li>
+  <li>Update nodes in the linkedlist</li>
+</ul>
+
+<p>Once we achieve this, we’d have something like this:</p>
+
+<p align="center">
+  <img width="200" src="/images/posts/spritekit/backgroundscroll/left.gif" />
+</p>
+
+<h3 id="screen-touch">Screen touch</h3>
+
+<ul>
+  <li>We have to override touchesBegan function and locate where the user has touched the screen.</li>
+</ul>
+
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">extension</span> <span class="kt">MainScene</span><span class="p">:</span> <span class="kt">UIGestureRecognizerDelegate</span> <span class="p">{</span>
+
+    <span class="k">override</span> <span class="kd">func</span> <span class="nf">touchesBegan</span><span class="p">(</span><span class="n">_</span> <span class="nv">touches</span><span class="p">:</span> <span class="kt">Set</span><span class="o">&lt;</span><span class="kt">UITouch</span><span class="o">&gt;</span><span class="p">,</span> <span class="n">with</span> <span class="nv">event</span><span class="p">:</span> <span class="kt">UIEvent</span><span class="p">?)</span> <span class="p">{</span>
+
+        <span class="k">for</span> <span class="n">touch</span> <span class="k">in</span> <span class="n">touches</span> <span class="p">{</span>
+            <span class="k">let</span> <span class="nv">position</span> <span class="o">=</span> <span class="n">touch</span><span class="o">.</span><span class="nf">location</span><span class="p">(</span><span class="nv">in</span><span class="p">:</span> <span class="k">self</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">position</span><span class="o">.</span><span class="n">x</span> <span class="o">&lt;</span> <span class="k">self</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">width</span><span class="o">/</span><span class="mi">2</span> <span class="p">{</span>
+                <span class="k">self</span><span class="o">.</span><span class="n">backgroundScroll</span><span class="p">?</span><span class="o">.</span><span class="nf">changeDirection</span><span class="p">(</span><span class="nv">direction</span><span class="p">:</span> <span class="o">.</span><span class="n">left</span><span class="p">)</span>
+            <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+                <span class="k">self</span><span class="o">.</span><span class="n">backgroundScroll</span><span class="p">?</span><span class="o">.</span><span class="nf">changeDirection</span><span class="p">(</span><span class="nv">direction</span><span class="p">:</span> <span class="o">.</span><span class="n">right</span><span class="p">)</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h3 id="update-nodes-in-the-linkedlist">Update nodes in the linkedlist</h3>
+
+<ul>
+  <li>We have modified our update function to change the position of all nodes in the LinkedList. Depending on scroll direction, we’ll take the head or the tail of the linkedlist and update all node’s positions.</li>
+</ul>
+
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">update</span><span class="p">(</span><span class="nv">deltaTime</span><span class="p">:</span> <span class="kt">TimeInterval</span><span class="p">)</span> <span class="p">{</span>
+
+    <span class="k">guard</span> <span class="o">!</span><span class="n">linkedBackgrounds</span><span class="o">.</span><span class="n">isEmpty</span> <span class="k">else</span> <span class="p">{</span>
+        <span class="k">return</span>
+    <span class="p">}</span>
+
+    <span class="k">if</span> <span class="n">direction</span> <span class="o">==</span> <span class="o">.</span><span class="n">right</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="k">let</span> <span class="nv">head</span> <span class="o">=</span> <span class="n">linkedBackgrounds</span><span class="o">.</span><span class="n">first</span> <span class="p">{</span>
+            <span class="k">let</span> <span class="nv">headSprite</span> <span class="o">=</span> <span class="n">head</span><span class="o">.</span><span class="n">value</span>
+            <span class="n">headSprite</span><span class="o">.</span><span class="n">position</span> <span class="o">=</span> <span class="kt">CGPoint</span><span class="p">(</span><span class="nv">x</span><span class="p">:</span> <span class="n">headSprite</span><span class="o">.</span><span class="n">position</span><span class="o">.</span><span class="n">x</span><span class="o">-</span><span class="kt">CGFloat</span><span class="p">(</span><span class="n">deltaTime</span><span class="p">)</span><span class="o">*</span><span class="n">speed</span><span class="p">,</span> <span class="nv">y</span><span class="p">:</span> <span class="n">headSprite</span><span class="o">.</span><span class="n">position</span><span class="o">.</span><span class="n">y</span><span class="p">)</span>
+            <span class="k">var</span> <span class="nv">node</span> <span class="o">=</span> <span class="n">linkedBackgrounds</span><span class="o">.</span><span class="n">first</span>
+            <span class="k">while</span> <span class="n">node</span><span class="p">?</span><span class="o">.</span><span class="n">next</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+                <span class="k">let</span> <span class="nv">previous</span> <span class="o">=</span> <span class="n">node</span>
+                <span class="n">node</span> <span class="o">=</span> <span class="n">node</span><span class="p">?</span><span class="o">.</span><span class="n">next</span>
+                <span class="n">node</span><span class="p">?</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">position</span> <span class="o">=</span> <span class="kt">CGPoint</span><span class="p">(</span><span class="nv">x</span><span class="p">:</span> <span class="p">(</span><span class="n">previous</span><span class="p">?</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">position</span><span class="o">.</span><span class="n">x</span><span class="p">)</span><span class="o">!+</span><span class="p">(</span><span class="n">previous</span><span class="p">?</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">width</span><span class="p">)</span><span class="o">!</span><span class="p">,</span>
+                                               <span class="nv">y</span><span class="p">:</span> <span class="p">(</span><span class="n">previous</span><span class="p">?</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">position</span><span class="o">.</span><span class="n">y</span><span class="p">)</span><span class="o">!</span><span class="p">)</span>
+            <span class="p">}</span>
+            <span class="k">if</span> <span class="nf">spriteIsOutOfBounds</span><span class="p">(</span><span class="nv">sprite</span><span class="p">:</span> <span class="n">head</span><span class="o">.</span><span class="n">value</span><span class="p">)</span> <span class="p">{</span>
+                <span class="k">let</span> <span class="nv">node</span> <span class="o">=</span> <span class="n">linkedBackgrounds</span><span class="o">.</span><span class="nf">remove</span><span class="p">(</span><span class="nv">node</span><span class="p">:</span> <span class="n">head</span><span class="p">)</span>
+                <span class="n">linkedBackgrounds</span><span class="o">.</span><span class="nf">append</span><span class="p">(</span><span class="nv">value</span><span class="p">:</span> <span class="n">node</span><span class="p">)</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="k">let</span> <span class="nv">tail</span> <span class="o">=</span> <span class="n">linkedBackgrounds</span><span class="o">.</span><span class="n">last</span> <span class="p">{</span>
+            <span class="k">let</span> <span class="nv">tailSprite</span> <span class="o">=</span> <span class="n">tail</span><span class="o">.</span><span class="n">value</span>
+            <span class="n">tailSprite</span><span class="o">.</span><span class="n">position</span> <span class="o">=</span> <span class="kt">CGPoint</span><span class="p">(</span><span class="nv">x</span><span class="p">:</span> <span class="n">tailSprite</span><span class="o">.</span><span class="n">position</span><span class="o">.</span><span class="n">x</span><span class="o">+</span><span class="kt">CGFloat</span><span class="p">(</span><span class="n">deltaTime</span><span class="p">)</span><span class="o">*</span><span class="n">speed</span><span class="p">,</span> <span class="nv">y</span><span class="p">:</span> <span class="n">tailSprite</span><span class="o">.</span><span class="n">position</span><span class="o">.</span><span class="n">y</span><span class="p">)</span>
+            <span class="k">var</span> <span class="nv">node</span> <span class="o">=</span> <span class="n">linkedBackgrounds</span><span class="o">.</span><span class="n">last</span>
+            <span class="k">while</span> <span class="n">node</span><span class="p">?</span><span class="o">.</span><span class="n">previous</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+                <span class="k">let</span> <span class="nv">next</span> <span class="o">=</span> <span class="n">node</span>
+                <span class="n">node</span> <span class="o">=</span> <span class="n">node</span><span class="p">?</span><span class="o">.</span><span class="n">previous</span>
+                <span class="n">node</span><span class="p">?</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">position</span> <span class="o">=</span> <span class="kt">CGPoint</span><span class="p">(</span><span class="nv">x</span><span class="p">:</span> <span class="p">(</span><span class="n">next</span><span class="p">?</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">position</span><span class="o">.</span><span class="n">x</span><span class="p">)</span><span class="o">!-</span><span class="p">(</span><span class="n">node</span><span class="p">?</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">width</span><span class="p">)</span><span class="o">!</span><span class="p">,</span>
+                                               <span class="nv">y</span><span class="p">:</span> <span class="p">(</span><span class="n">next</span><span class="p">?</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">position</span><span class="o">.</span><span class="n">y</span><span class="p">)</span><span class="o">!</span><span class="p">)</span>
+            <span class="p">}</span>
+            <span class="k">if</span> <span class="nf">spriteIsOutOfBounds</span><span class="p">(</span><span class="nv">sprite</span><span class="p">:</span> <span class="n">tail</span><span class="o">.</span><span class="n">value</span><span class="p">)</span> <span class="p">{</span>
+                <span class="k">let</span> <span class="nv">node</span> <span class="o">=</span> <span class="n">linkedBackgrounds</span><span class="o">.</span><span class="nf">remove</span><span class="p">(</span><span class="nv">node</span><span class="p">:</span> <span class="n">tail</span><span class="p">)</span>
+                <span class="n">linkedBackgrounds</span><span class="o">.</span><span class="nf">appendBeginning</span><span class="p">(</span><span class="nv">value</span><span class="p">:</span> <span class="n">node</span><span class="p">)</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+</code></pre></div></div>
+<p>Maybe we could optimize this function, but for now it’s ok.</p>
+
+<p>You have the code <a href="https://github.com/pablogsIO/pablogsIO.github.io/tree/master/sourcecode/spritekit/BackgroundScrollPartTwo">here</a>. Hope you enjoy it!</p>
+
+<p>And that’s all folks!! See you in part three!!!</p>
+
+
+                <div id="post-divider">
+                    <section id="pagination">
+                        
+                        
+                        <a class="pagination-next" href="/2019/05/10/Spritekit-BackgroundScroll.html">&laquo; Spritekit - Background Scrolling - I </a>
+                                
+                    </section>
+                </div>
+            </div>
+
+			</article>    
+    	</div>
+
+	</div>
+    
+	<footer>	
+	<p>&copy; 2018 <a href="mailto:pablo@pablogs.io">Pablo Garcia. </a><a href="https://jekyllrb.com">Powered by Jekyll</a></p>
+</footer>
+
+</body>
+
+</html>
+
+
