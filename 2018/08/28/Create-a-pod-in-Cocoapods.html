@@ -77,12 +77,12 @@
 
 <p>A Pod has a podspec file that defines the specifications of a Pod. In this example we have the following podspec:</p>
 
-<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nl">Pod:</span><span class="o">:</span><span class="n">Spec</span><span class="o">.</span><span class="na">new</span> <span class="k">do</span> <span class="o">|</span><span class="n">s</span><span class="o">|</span>
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nl">Pod:</span><span class="o">:</span><span class="nc">Spec</span><span class="o">.</span><span class="na">new</span> <span class="k">do</span> <span class="o">|</span><span class="n">s</span><span class="o">|</span>
   <span class="n">s</span><span class="o">.</span><span class="na">name</span>         <span class="o">=</span> <span class="s">"GeometricLoaders"</span>
   <span class="n">s</span><span class="o">.</span><span class="na">version</span>      <span class="o">=</span> <span class="s">"1.1.0"</span>
   <span class="n">s</span><span class="o">.</span><span class="na">summary</span>      <span class="o">=</span> <span class="s">"Fancy and beautiful loaders for you awesome apps!"</span>
   <span class="n">s</span><span class="o">.</span><span class="na">homepage</span>     <span class="o">=</span> <span class="s">"https://github.com/pablogsIO/GeometricLoaders"</span>
-  <span class="n">s</span><span class="o">.</span><span class="na">license</span>      <span class="o">=</span> <span class="err">'</span><span class="n">MIT</span><span class="err">'</span>
+  <span class="n">s</span><span class="o">.</span><span class="na">license</span>      <span class="o">=</span> <span class="err">'</span><span class="no">MIT</span><span class="err">'</span>
   <span class="n">s</span><span class="o">.</span><span class="na">author</span>       <span class="o">=</span> <span class="s">"Pablo Garcia"</span>
   <span class="n">s</span><span class="o">.</span><span class="na">source</span>       <span class="o">=</span> <span class="o">{</span> <span class="o">:</span><span class="n">git</span> <span class="o">=&gt;</span> <span class="s">"https://github.com/pablogsIO/GeometricLoaders.git"</span><span class="o">,</span> <span class="o">:</span><span class="n">tag</span> <span class="o">=&gt;</span> <span class="n">s</span><span class="o">.</span><span class="na">version</span> <span class="o">}</span>
   <span class="n">s</span><span class="o">.</span><span class="na">screenshots</span>   <span class="o">=</span> <span class="o">[</span><span class="err">'</span><span class="nl">https:</span><span class="c1">//raw.githubusercontent.com/pablogsIO/GeometricLoaders/master/Images/infinityloader.gif',</span>
@@ -92,8 +92,8 @@
     <span class="err">'</span><span class="nl">https:</span><span class="c1">//raw.githubusercontent.com/pablogsIO/GeometricLoaders/master/Images/orbitloader.gif',</span>
     <span class="err">'</span><span class="nl">https:</span><span class="c1">//raw.githubusercontent.com/pablogsIO/GeometricLoaders/master/Images/waterwaves.gif']</span>
   <span class="n">s</span><span class="o">.</span><span class="na">platform</span>     <span class="o">=</span> <span class="o">:</span><span class="n">ios</span><span class="o">,</span> <span class="err">'</span><span class="mf">10.0</span><span class="err">'</span>
-  <span class="n">s</span><span class="o">.</span><span class="na">source_files</span> <span class="o">=</span> <span class="err">'</span><span class="n">Source</span><span class="o">/*.</span><span class="na">swift</span><span class="err">'</span>
-  <span class="n">s</span><span class="o">.</span><span class="na">frameworks</span>   <span class="o">=</span> <span class="err">'</span><span class="n">UIKit</span><span class="err">'</span>
+  <span class="n">s</span><span class="o">.</span><span class="na">source_files</span> <span class="o">=</span> <span class="err">'</span><span class="nc">Source</span><span class="o">/*.</span><span class="na">swift</span><span class="err">'</span>
+  <span class="n">s</span><span class="o">.</span><span class="na">frameworks</span>   <span class="o">=</span> <span class="err">'</span><span class="nc">UIKit</span><span class="err">'</span>
   <span class="n">s</span><span class="o">.</span><span class="na">swift_version</span><span class="o">=</span> <span class="err">'</span><span class="mf">4.0</span><span class="err">'</span>
   <span class="n">s</span><span class="o">.</span><span class="na">requires_arc</span> <span class="o">=</span> <span class="kc">true</span>
   <span class="n">s</span><span class="o">.</span><span class="na">social_media_url</span> <span class="o">=</span> <span class="err">'</span><span class="nl">https:</span><span class="c1">//twitter.com/_pablogs_'</span>
