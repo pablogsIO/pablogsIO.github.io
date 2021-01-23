@@ -1,0 +1,69 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"/><meta name="og:site_name" content="Pablo Garcia"/><link rel="canonical" href="https://pablogs.io/blog/2019-02-06-MapClusteringII"/><meta name="twitter:url" content="https://pablogs.io/blog/2019-02-06-MapClusteringII"/><meta name="og:url" content="https://pablogs.io/blog/2019-02-06-MapClusteringII"/><title>Quadtree and Map Clustering - II | Pablo Garcia</title><meta name="twitter:title" content="Quadtree and Map Clustering - II | Pablo Garcia"/><meta name="og:title" content="Quadtree and Map Clustering - II | Pablo Garcia"/><meta name="description" content="In the previous post we viewed how to build a QuadTree, now we are going to do the real magic..."/><meta name="twitter:description" content="In the previous post we viewed how to build a QuadTree, now we are going to do the real magic..."/><meta name="og:description" content="In the previous post we viewed how to build a QuadTree, now we are going to do the real magic..."/><meta name="twitter:card" content="summary"/><link rel="stylesheet" href="/styles.css" type="text/css"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><link rel="shortcut icon" href="/images/favicon.png" type="image/png"/><link rel="alternate" href="/feed.rss" type="application/rss+xml" title="Subscribe to Pablo Garcia"/></head><body class="item-page"><div class="wrapper"><header><div class="header-divider"><div class="site"><a class="site-name" href="/">Pablo Garcia</a><p>Apps for iPhone, iPad, Apple TV and Apple Watch</p></div><nav class="header-nav"><ul class="header-ul"><li class="header-li"><a href="/home">home</a></li><li class="header-li"><a class="selected" href="/blog">blog</a></li><li class="header-li"><a href="/contact">contact</a></li></ul></nav></div></header><article><div class="content-post-detail"><h1 class="post-title">Quadtree and Map Clustering - II</h1><p class="release-date">Feb 6, 2019</p><p>In the previous <a href="https://pablogs.io/2019/01/23/MapClusteringI.html">post</a> we viewed how to build a QuadTree, now we are going to do the real magic...</p><h2>Clustering</h2><p>Clustering is the task of grouping a set of objects in such a way that objects in the same group (called a cluster) are more similar (in some sense, i.e. distance) to each other than to those in other groups (clusters). We’ll need to find all the points which lie in different regions of the map to create groups of points.</p><pre><code>
+
+<span class="keyword">struct</span> ClusterPoint {
+    <span class="keyword">let</span> origin: <span class="type">CGPoint</span>
+    <span class="keyword">let</span> points: <span class="type">Int</span>
+}
+
+<span class="keyword">class</span> PGClusteringManager {
+
+    <span class="keyword">private let</span> quadtree: <span class="type">QuadTree</span>
+    <span class="keyword">private let</span> boxWidth = <span class="type">CGFloat</span>(<span class="number">5.0</span>)
+    <span class="keyword">private let</span> boxHeight = <span class="type">CGFloat</span>(<span class="number">10.0</span>)
+
+    <span class="keyword">init</span>(quadtree: <span class="type">QuadTree</span>) {
+        <span class="keyword">self</span>.<span class="property">quadtree</span> = quadtree
+    }
+
+    <span class="keyword">public func</span> clusterAnnotationsWithinRectangle(rectangle: <span class="type">CGRect</span>) -&gt; [<span class="type">ClusterPoint</span>] {
+
+        <span class="keyword">var</span> clusters = [<span class="type">ClusterPoint</span>]()
+
+        <span class="keyword">let</span> boxArea = <span class="call">calculateBoxAreaSize</span>(size: rectangle.<span class="property">size</span>)
+        <span class="keyword">var</span> xCoordinate = rectangle.<span class="property">origin</span>.<span class="property">x</span>
+        <span class="keyword">var</span> yCoordinate = rectangle.<span class="property">origin</span>.<span class="property">y</span>
+
+        <span class="keyword">while</span> yCoordinate&lt;rectangle.<span class="property">size</span>.<span class="call">height</span> {
+            xCoordinate = rectangle.<span class="property">origin</span>.<span class="property">x</span>
+            <span class="keyword">while</span> xCoordinate&lt;rectangle.<span class="property">size</span>.<span class="call">width</span> {
+                <span class="keyword">let</span> boundingBox = <span class="type">CGRect</span>(x: xCoordinate, y: yCoordinate, width: boxArea.<span class="property">width</span>, height: boxArea.<span class="property">height</span>)
+                quadtree.<span class="call">queryRegion</span>(rectangle: boundingBox) { (points) <span class="keyword">in
+                    if</span> points.<span class="property">count</span> != <span class="number">0</span> {
+                        <span class="keyword">var</span> totalX = <span class="type">CGFloat</span>(<span class="number">0</span>)
+                        <span class="keyword">var</span> totalY = <span class="type">CGFloat</span>(<span class="number">0</span>)
+
+                        <span class="keyword">for</span> point <span class="keyword">in</span> points {
+                            totalX += point.<span class="property">x</span>
+                            totalY += point.<span class="property">y</span>
+                        }
+                        <span class="keyword">let</span> totalPoints = <span class="type">CGFloat</span>(points.<span class="property">count</span>)
+                        clusters.<span class="call">append</span>(<span class="type">ClusterPoint</span>(origin: <span class="type">CGPoint</span>(x: totalX/totalPoints,
+                                                                     y: totalY/totalPoints),
+                                                     points: points.<span class="property">count</span>))
+                    }
+                }
+                xCoordinate += boxArea.<span class="property">width</span>
+            }
+            yCoordinate += boxArea.<span class="property">height</span>
+        }
+
+        <span class="keyword">return</span> clusters
+    }
+
+    <span class="keyword">private func</span> calculateBoxAreaSize(size: <span class="type">CGSize</span>) -&gt; <span class="type">CGSize</span> {
+
+        <span class="keyword">let</span> width = size.<span class="property">width</span>/boxWidth
+        <span class="keyword">let</span> height = size.<span class="property">height</span>/boxHeight
+
+        <span class="keyword">return</span> <span class="type">CGSize</span>(width: width, height: height)
+
+    }
+
+}
+
+
+</code></pre><p>After insert all data in the QuadTree and calling the clusterAnnotationsWithinRectangle function, we'll get something like this:</p><p align="center">
+  <img width="500" src="/images/posts/clustering/clustering.png">
+</p><p>Awesome!! And now, we are going to check that everything is ok. In the next gift we can see all the points and cluster with their bounding box.</p><p align="center">
+  <img width="500" src="/images/posts/clustering/clustering.gif">
+</p></div></article><footer><p>© 2021 Pablo Garcia. Built in Swift using <a href="https://github.com/johnsundell/publish" target="_blank" rel="noreferrer">Publish</a></p><p><a href="https://github.com/pablogsio" target="_blank" rel="noreferrer">GitHub</a> | <a href="https://pablogs.io/feed.rss">RSS Feed</a></p></footer></div></body></html>
