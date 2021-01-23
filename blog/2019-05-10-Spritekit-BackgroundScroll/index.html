@@ -1,0 +1,154 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"/><meta name="og:site_name" content="Pablo Garcia"/><link rel="canonical" href="https://pablogs.io/blog/2019-05-10-Spritekit-BackgroundScroll"/><meta name="twitter:url" content="https://pablogs.io/blog/2019-05-10-Spritekit-BackgroundScroll"/><meta name="og:url" content="https://pablogs.io/blog/2019-05-10-Spritekit-BackgroundScroll"/><title>Spritekit - Background Scrolling - I | Pablo Garcia</title><meta name="twitter:title" content="Spritekit - Background Scrolling - I | Pablo Garcia"/><meta name="og:title" content="Spritekit - Background Scrolling - I | Pablo Garcia"/><meta name="description" content="There are a lot of games using Infinite-Scrolling-Background technique to simulate characters movement.I"/><meta name="twitter:description" content="There are a lot of games using Infinite-Scrolling-Background technique to simulate characters movement.I"/><meta name="og:description" content="There are a lot of games using Infinite-Scrolling-Background technique to simulate characters movement.I"/><meta name="twitter:card" content="summary"/><link rel="stylesheet" href="/styles.css" type="text/css"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><link rel="shortcut icon" href="/images/favicon.png" type="image/png"/><link rel="alternate" href="/feed.rss" type="application/rss+xml" title="Subscribe to Pablo Garcia"/></head><body class="item-page"><div class="wrapper"><header><div class="header-divider"><div class="site"><a class="site-name" href="/">Pablo Garcia</a><p>Apps for iPhone, iPad, Apple TV and Apple Watch</p></div><nav class="header-nav"><ul class="header-ul"><li class="header-li"><a href="/home">home</a></li><li class="header-li"><a class="selected" href="/blog">blog</a></li><li class="header-li"><a href="/contact">contact</a></li></ul></nav></div></header><article><div class="content-post-detail"><h1 class="post-title">Spritekit - Background Scrolling - I</h1><p class="release-date">May 10, 2019</p><p>There are a lot of games using Infinite-Scrolling-Background technique to simulate characters movement. The character is always on the same place in the screen and the background (buildings, trees, clouds...) moves toward left or right, depending on whether the character is moving to the right or to the left. We have this image:</p><p align="center">
+  <img width="400" src="/images/posts/spritekit/backgroundscroll/bg.png">
+</p><p>With this technique we'd have something like this:</p><p align="center">
+  <img width="400" src="/images/posts/spritekit/backgroundscroll/background.gif">
+</p><p>But, how could we achieve something like that? Do we have to have an infinite image? The solution is very simple. Have a look at this gif:</p><p align="center">
+  <img width="400" src="/images/posts/spritekit/backgroundscroll/bgscroll.gif">
+</p><p>In this gif, we have simulated the screen (lines in red) and four consecutives backgrounds (white, blue, red and green), when a background get off the screen we put it at the end and so on. Easy, isn't it?</p><h3>First approach</h3><p>I have created BackgroundScroll class to achieve this (bear in mind that positions are relative to the left red line)</p><pre><code>
+
+<span class="keyword">import</span> SpriteKit
+
+<span class="keyword">class</span> BackgroundScroll {
+
+    <span class="keyword">private let</span> backgrounds: [<span class="type">SKSpriteNode</span>]
+    <span class="keyword">private unowned let</span> scene: <span class="type">SKScene</span>
+    <span class="keyword">private let</span> speed: <span class="type">CGFloat</span> = <span class="number">25</span>
+    <span class="keyword">private var</span> totalWidth: <span class="type">CGFloat</span> = <span class="number">0</span>
+
+    <span class="keyword">init</span>?(backgrounds: [<span class="type">SKSpriteNode</span>], scene: <span class="type">SKScene</span>){
+        <span class="keyword">guard</span> backgrounds.<span class="property">count</span> &gt; <span class="number">1</span> <span class="keyword">else</span> {
+            <span class="call">print</span>(<span class="string">"You have to include at least two backgrounds"</span>)
+            <span class="keyword">return nil</span>
+        }
+        <span class="keyword">self</span>.<span class="property">scene</span> = scene
+        <span class="keyword">self</span>.<span class="property">backgrounds</span> = backgrounds
+        <span class="call">addBackgroundsToSceneAndCalculateTotalWidth</span>()
+
+    }
+
+    <span class="keyword">private func</span> addBackgroundsToSceneAndCalculateTotalWidth() {
+
+        <span class="keyword">for</span> background <span class="keyword">in</span> backgrounds {
+            <span class="keyword">self</span>.<span class="property">scene</span>.<span class="call">addChild</span>(background)
+            totalWidth+=background.<span class="property">frame</span>.<span class="property">width</span>
+        }
+    }
+
+    <span class="keyword">public func</span> scrollRight() {
+        <span class="keyword">var</span> offset: <span class="type">CGFloat</span> = <span class="number">0</span>
+        <span class="keyword">var</span> spaceToBeOutsideScene: <span class="type">CGFloat</span> = <span class="number">0</span>
+        <span class="keyword">let</span> xOrigin = <span class="keyword">self</span>.<span class="property">scene</span>.<span class="property">frame</span>.<span class="property">width</span>/<span class="number">2</span>
+
+        <span class="keyword">for</span> node <span class="keyword">in</span> backgrounds {
+            spaceToBeOutsideScene += node.<span class="property">frame</span>.<span class="property">width</span>
+            node.<span class="property">position</span> = <span class="type">CGPoint</span>(x: xOrigin+offset+node.<span class="property">frame</span>.<span class="property">width</span>/<span class="number">2</span>, y: <span class="keyword">self</span>.<span class="property">scene</span>.<span class="property">frame</span>.<span class="property">height</span>/<span class="number">2</span>)
+            <span class="keyword">let</span> actionMoveOutsideScene = <span class="type">SKAction</span>.<span class="call">moveTo</span>(x: xOrigin-node.<span class="property">frame</span>.<span class="property">width</span>/<span class="number">2</span>, duration: <span class="type">TimeInterval</span>(spaceToBeOutsideScene/speed))
+            <span class="keyword">let</span> actionMoveRightToLeft = <span class="type">SKAction</span>.<span class="call">moveTo</span>(x: xOrigin-node.<span class="property">frame</span>.<span class="property">width</span>/<span class="number">2</span>, duration: <span class="type">TimeInterval</span>((totalWidth)/speed))
+            <span class="keyword">let</span> actionMoveToLastPosition = <span class="type">SKAction</span>.<span class="call">moveTo</span>(x: xOrigin+totalWidth-node.<span class="property">frame</span>.<span class="property">width</span>/<span class="number">2</span>, duration: <span class="number">0</span>)
+            offset += node.<span class="property">size</span>.<span class="property">width</span>
+            node.<span class="call">run</span>(<span class="type">SKAction</span>.<span class="call">sequence</span>([actionMoveOutsideScene, <span class="type">SKAction</span>.<span class="call">repeatForever</span>(<span class="type">SKAction</span>.<span class="call">sequence</span>([actionMoveToLastPosition,actionMoveRightToLeft]))]))
+        }
+    }
+
+}
+
+</code></pre><p>What we have done is to create SKActions to move the backgrounds from right toward left.</p><h3>Second approach</h3><p>There is another way of doing this. We are going to update the backgrounds positions every single time the update function in MainScene is called. We'll use a double linkedlist for that. Each cycle, we’ll update the head node position, the next node position will be relative to the previous one and so on.</p><pre><code>
+
+<span class="keyword">class</span> BackgroundScroll {
+
+    <span class="keyword">private let</span> backgrounds: [<span class="type">SKSpriteNode</span>]
+    <span class="keyword">private var</span> linkedBackgrounds = <span class="type">LinkedList</span>&lt;<span class="type">SKSpriteNode</span>&gt;()
+
+    <span class="keyword">private unowned let</span> scene: <span class="type">SKScene</span>
+    <span class="keyword">private let</span> speed: <span class="type">CGFloat</span> = <span class="number">25</span>
+    <span class="keyword">private var</span> totalWidth: <span class="type">CGFloat</span> = <span class="number">0</span>
+
+    <span class="keyword">init</span>?(sprites: [<span class="type">SKSpriteNode</span>], scene: <span class="type">SKScene</span>, implementation: <span class="type">Implementation</span>) {
+        <span class="keyword">guard</span> sprites.<span class="property">count</span> &gt; <span class="number">1</span> <span class="keyword">else</span> {
+            <span class="call">print</span>(<span class="string">"You have to include at least two backgrounds"</span>)
+            <span class="keyword">return nil</span>
+        }
+        <span class="keyword">self</span>.<span class="property">scene</span> = scene
+        <span class="keyword">self</span>.<span class="property">backgrounds</span> = sprites
+        <span class="keyword">switch</span> implementation {
+        <span class="keyword">case</span> .<span class="dotAccess">actions</span>:
+            <span class="call">addBackgroundsToSceneAndCalculateTotalWidth</span>()
+        <span class="keyword">case</span> .<span class="dotAccess">linkedlist</span>:
+            <span class="call">createLinkedList</span>()
+        }
+    }
+
+    <span class="keyword">private func</span> addBackgroundsToSceneAndCalculateTotalWidth() {
+
+        <span class="keyword">for</span> background <span class="keyword">in</span> backgrounds {
+            <span class="keyword">self</span>.<span class="property">scene</span>.<span class="call">addChild</span>(background)
+            totalWidth+=background.<span class="property">frame</span>.<span class="property">width</span>
+        }
+    }
+
+    <span class="keyword">private func</span> createLinkedList() {
+        <span class="keyword">var</span> offset: <span class="type">CGFloat</span> = <span class="number">0</span>
+        <span class="keyword">let</span> xOrigin = <span class="keyword">self</span>.<span class="property">scene</span>.<span class="property">frame</span>.<span class="property">width</span>/<span class="number">2</span>
+
+        <span class="keyword">for</span> sprite <span class="keyword">in</span> backgrounds {
+            sprite.<span class="property">position</span> = <span class="type">CGPoint</span>(x: xOrigin+offset+sprite.<span class="property">frame</span>.<span class="property">width</span>/<span class="number">2</span>, y: <span class="keyword">self</span>.<span class="property">scene</span>.<span class="property">frame</span>.<span class="property">height</span>/<span class="number">2</span>)
+            linkedBackgrounds.<span class="call">append</span>(value: sprite)
+            <span class="keyword">self</span>.<span class="property">scene</span>.<span class="call">addChild</span>(sprite)
+            offset += sprite.<span class="property">size</span>.<span class="property">width</span>
+        }
+    }
+
+    <span class="keyword">public func</span> scrollRight() {
+        <span class="keyword">var</span> offset: <span class="type">CGFloat</span> = <span class="number">0</span>
+        <span class="keyword">var</span> spaceToBeOutsideScene: <span class="type">CGFloat</span> = <span class="number">0</span>
+        <span class="keyword">let</span> xOrigin = <span class="keyword">self</span>.<span class="property">scene</span>.<span class="property">frame</span>.<span class="property">width</span>/<span class="number">2</span>
+
+        <span class="keyword">for</span> node <span class="keyword">in</span> backgrounds {
+            spaceToBeOutsideScene += node.<span class="property">frame</span>.<span class="property">width</span>
+            node.<span class="property">position</span> = <span class="type">CGPoint</span>(x: xOrigin+offset+node.<span class="property">frame</span>.<span class="property">width</span>/<span class="number">2</span>, y: <span class="keyword">self</span>.<span class="property">scene</span>.<span class="property">frame</span>.<span class="property">height</span>/<span class="number">2</span>)
+            <span class="keyword">let</span> actionMoveOutsideScene = <span class="type">SKAction</span>.<span class="call">moveTo</span>(x: xOrigin-node.<span class="property">frame</span>.<span class="property">width</span>/<span class="number">2</span>,
+                                                         duration: <span class="type">TimeInterval</span>(spaceToBeOutsideScene/speed))
+            <span class="keyword">let</span> actionMoveRightToLeft = <span class="type">SKAction</span>.<span class="call">moveTo</span>(x: xOrigin-node.<span class="property">frame</span>.<span class="property">width</span>/<span class="number">2</span>,
+                                                        duration: <span class="type">TimeInterval</span>((totalWidth)/speed))
+            <span class="keyword">let</span> actionMoveToLastPosition = <span class="type">SKAction</span>.<span class="call">moveTo</span>(x: xOrigin+totalWidth-node.<span class="property">frame</span>.<span class="property">width</span>/<span class="number">2</span>, duration: <span class="number">0</span>)
+            offset += node.<span class="property">size</span>.<span class="property">width</span>
+            node.<span class="call">run</span>(<span class="type">SKAction</span>.<span class="call">sequence</span>([actionMoveOutsideScene, <span class="type">SKAction</span>.<span class="call">repeatForever</span>(<span class="type">SKAction</span>.<span class="call">sequence</span>([actionMoveToLastPosition, actionMoveRightToLeft]))]))
+        }
+    }
+
+    <span class="keyword">public func</span> update(deltaTime: <span class="type">TimeInterval</span>) {
+
+        <span class="keyword">guard</span> !linkedBackgrounds.<span class="property">isEmpty</span> <span class="keyword">else</span> {
+            <span class="keyword">return</span>
+        }
+
+        <span class="keyword">if let</span> head = linkedBackgrounds.<span class="property">first</span> {
+            <span class="keyword">let</span> headSprite = head.<span class="property">value</span>
+            headSprite.<span class="property">position</span> = <span class="type">CGPoint</span>(x: headSprite.<span class="property">position</span>.<span class="property">x</span>-<span class="type">CGFloat</span>(deltaTime)*speed, y: headSprite.<span class="property">position</span>.<span class="property">y</span>)
+            <span class="keyword">var</span> node = linkedBackgrounds.<span class="property">first</span>
+            <span class="keyword">while</span> node?.<span class="property">next</span> != <span class="keyword">nil</span> {
+                <span class="keyword">let</span> previous = node
+                node = node?.<span class="property">next</span>
+                node?.<span class="property">value</span>.<span class="property">position</span> = <span class="type">CGPoint</span>(x: (previous?.<span class="property">value</span>.<span class="property">position</span>.<span class="property">x</span>)!+(previous?.<span class="property">value</span>.<span class="property">frame</span>.<span class="property">width</span>)!,
+                                               y: (previous?.<span class="property">value</span>.<span class="property">position</span>.<span class="property">y</span>)!)
+            }
+            <span class="keyword">if</span> <span class="call">spriteIsOutOfBounds</span>(sprite: head.<span class="property">value</span>) {
+                <span class="keyword">let</span> node = linkedBackgrounds.<span class="call">remove</span>(node: head)
+                linkedBackgrounds.<span class="call">append</span>(value: node)
+            }
+        }
+
+    }
+
+    <span class="keyword">private func</span> spriteIsOutOfBounds(sprite: <span class="type">SKSpriteNode</span>) -&gt; <span class="type">Bool</span> {
+
+        <span class="keyword">let</span> origin = <span class="keyword">self</span>.<span class="property">scene</span>.<span class="property">frame</span>.<span class="property">width</span>/<span class="number">2</span>
+
+        <span class="keyword">let</span> outOfBounds = (sprite.<span class="property">position</span>.<span class="property">x</span>+sprite.<span class="property">frame</span>.<span class="property">width</span>/<span class="number">2</span>)&lt;origin
+
+        <span class="keyword">return</span> outOfBounds
+    }
+}
+
+
+</code></pre><p>You have the code <a href="https://github.com/pablogsIO/pablogsIO.github.io/tree/master/sourcecode/spritekit/BackgroundScroll">here</a>. Hope you enjoy it!</p><p>And that's all folks!! See you in part <a href="https://pablogs.io/2019/06/30/Spritekit-BackgroundScrollPartTwo.html">two</a>!!!</p></div></article><footer><p>© 2021 Pablo Garcia. Built in Swift using <a href="https://github.com/johnsundell/publish" target="_blank" rel="noreferrer">Publish</a></p><p><a href="https://github.com/pablogsio" target="_blank" rel="noreferrer">GitHub</a> | <a href="https://pablogs.io/feed.rss">RSS Feed</a></p></footer></div></body></html>

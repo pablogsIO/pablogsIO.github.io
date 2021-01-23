@@ -1,0 +1,46 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"/><meta name="og:site_name" content="Pablo Garcia"/><link rel="canonical" href="https://pablogs.io/blog/2018-11-30-TutorialTableViewXIB"/><meta name="twitter:url" content="https://pablogs.io/blog/2018-11-30-TutorialTableViewXIB"/><meta name="og:url" content="https://pablogs.io/blog/2018-11-30-TutorialTableViewXIB"/><title>Tutorial - Custom Cells with XIB | Pablo Garcia</title><meta name="twitter:title" content="Tutorial - Custom Cells with XIB | Pablo Garcia"/><meta name="og:title" content="Tutorial - Custom Cells with XIB | Pablo Garcia"/><meta name="description" content="In this tutorial I'm going to explain how to create custom cells with xibs files in a few easy steps."/><meta name="twitter:description" content="In this tutorial I'm going to explain how to create custom cells with xibs files in a few easy steps."/><meta name="og:description" content="In this tutorial I'm going to explain how to create custom cells with xibs files in a few easy steps."/><meta name="twitter:card" content="summary"/><link rel="stylesheet" href="/styles.css" type="text/css"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><link rel="shortcut icon" href="/images/favicon.png" type="image/png"/><link rel="alternate" href="/feed.rss" type="application/rss+xml" title="Subscribe to Pablo Garcia"/></head><body class="item-page"><div class="wrapper"><header><div class="header-divider"><div class="site"><a class="site-name" href="/">Pablo Garcia</a><p>Apps for iPhone, iPad, Apple TV and Apple Watch</p></div><nav class="header-nav"><ul class="header-ul"><li class="header-li"><a href="/home">home</a></li><li class="header-li"><a class="selected" href="/blog">blog</a></li><li class="header-li"><a href="/contact">contact</a></li></ul></nav></div></header><article><div class="content-post-detail"><h1 class="post-title">Tutorial - Custom Cells with XIB</h1><p class="release-date">Nov 30, 2018</p><p>In this tutorial I'm going to explain how to create custom cells with xibs files in a few easy steps.</p><h3>Create the project</h3><ul><li>Open Xcode and create a Single View App.</li><li>Open Main.storyboard file</li><li>Drag and drop an UITableView</li><li>Drag and drop an UITableViewCell</li></ul><p align="center">
+  <img width="600" src="/images/posts/customcells/step1.png">
+  <img width="600" src="/images/posts/customcells/step2.png">
+</p><h3>Connect the UITableView with the ViewController</h3><ul><li>Select the Main.storyboard file and press Show assistant editor button. You will have something like this</li></ul><p align="center">
+  <img width="600" src="/images/posts/customcells/step3.png">
+</p><ul><li>Create the tableView IBOutlet in your ViewController</li></ul><p align="center">
+  <img width="600" src="/images/posts/customcells/step4.png">
+</p><h3>Create XIB file</h3><ul><li>Create a new User interface file. File-&gt; New File and name it BandCell.</li></ul><p align="center">
+  <img width="600" src="/images/posts/customcells/step5.png">
+</p><ul><li>Drop an UITableViewCell</li></ul><p align="center">
+  <img width="600" src="/images/posts/customcells/step6.png">
+</p><ul><li>Insert two UILabels like this</li></ul><p align="center">
+  <img width="600" src="/images/posts/customcells/step9.png">
+</p><h3>Create the BandCell class</h3><ul><li>Create a new Cocoa Touch class and name it BandCell</li><li>In the BandCell.xib file<ul><li>open the Identity Inspector tab and in custom class type <strong>BandCell</strong>.</li><li>open the Attribute inspector tab and in Identifier type <strong>BandCellId</strong></li></ul></li></ul><p align="center">
+  <img width="300" src="/images/posts/customcells/step7.png">
+  <img width="300" src="/images/posts/customcells/step8.png">
+</p><ul><li>Create an IBOutlet in BandCell class</li></ul><p align="center">
+  <img width="800" src="/images/posts/customcells/step10.png">
+</p><pre><code>     <span class="keyword">@IBOutlet weak var</span> rockBandName: <span class="type">UILabel</span>!
+  ```
+
+
+- <span class="type">Add</span> a function to configure the data
+
+</code></pre><p>swift public func configureCell(name: String) { rockBandName.text = name }</p><pre><code>
+
+
+### <span class="type">Configure</span> tableView, and tableview's delegate and datasource
+
+<span class="type">Once</span> we have configured everything, we are ready to <span class="keyword">do</span> the <span class="keyword">final</span> step.
+
+- <span class="type">Register</span> the <span class="type">BandCell</span> nib and add a few data <span class="keyword">for</span> our tableView
+
+
+</code></pre><p>swift private var data = ["Dire Straits", "AC/DC", "Joe Satriani", "Bruce Springsteen", "Julian Lage", "Menilmontant Swing", "Pink Floyd"]</p><p>override func viewDidLoad() { super.viewDidLoad() tableView.delegate = self tableView.dataSource = self tableView.register(UINib.init(nibName: "BandCell", bundle: nil), forCellReuseIdentifier: "BandCellId") }</p><pre><code>
+
+
+</code></pre><p>swift extension ViewController: UITableViewDataSource { func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -&gt; Int { return data.count }</p><p>func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -&gt; UITableViewCell { let cell = tableView.dequeueReusableCell(withIdentifier: "BandCellId") as! BandCell</p><p>cell.configureCell(name: data[indexPath.row])</p><p>return cell }</p><p>} extension ViewController: UITableViewDelegate {</p><p>}</p><pre><code>
+
+<span class="type">And</span> thats all. <span class="type">If</span> you run the project something like this will appear
+
+
+&lt;p align=<span class="string">"center"</span>&gt;
+  &lt;img width=<span class="string">"400"</span> src=<span class="string">"/images/posts/customcells/final.png"</span>&gt;
+&lt;
+</code></pre></div></article><footer><p>© 2021 Pablo Garcia. Built in Swift using <a href="https://github.com/johnsundell/publish" target="_blank" rel="noreferrer">Publish</a></p><p><a href="https://github.com/pablogsio" target="_blank" rel="noreferrer">GitHub</a> | <a href="https://pablogs.io/feed.rss">RSS Feed</a></p></footer></div></body></html>

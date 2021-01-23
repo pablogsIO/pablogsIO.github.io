@@ -1,0 +1,52 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"/><meta name="og:site_name" content="Pablo Garcia"/><link rel="canonical" href="https://pablogs.io/blog/2018-12-31-TutorialCollectionInsideTableView"/><meta name="twitter:url" content="https://pablogs.io/blog/2018-12-31-TutorialCollectionInsideTableView"/><meta name="og:url" content="https://pablogs.io/blog/2018-12-31-TutorialCollectionInsideTableView"/><title>Tutorial - UICollectionView inside TableViewCell | Pablo Garcia</title><meta name="twitter:title" content="Tutorial - UICollectionView inside TableViewCell | Pablo Garcia"/><meta name="og:title" content="Tutorial - UICollectionView inside TableViewCell | Pablo Garcia"/><meta name="description" content="And here we are, last hours of 2018 and I'm writing the last post of the year, hope you like it."/><meta name="twitter:description" content="And here we are, last hours of 2018 and I'm writing the last post of the year, hope you like it."/><meta name="og:description" content="And here we are, last hours of 2018 and I'm writing the last post of the year, hope you like it."/><meta name="twitter:card" content="summary"/><link rel="stylesheet" href="/styles.css" type="text/css"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><link rel="shortcut icon" href="/images/favicon.png" type="image/png"/><link rel="alternate" href="/feed.rss" type="application/rss+xml" title="Subscribe to Pablo Garcia"/></head><body class="item-page"><div class="wrapper"><header><div class="header-divider"><div class="site"><a class="site-name" href="/">Pablo Garcia</a><p>Apps for iPhone, iPad, Apple TV and Apple Watch</p></div><nav class="header-nav"><ul class="header-ul"><li class="header-li"><a href="/home">home</a></li><li class="header-li"><a class="selected" href="/blog">blog</a></li><li class="header-li"><a href="/contact">contact</a></li></ul></nav></div></header><article><div class="content-post-detail"><h1 class="post-title">Tutorial - UICollectionView inside TableViewCell</h1><p class="release-date">Dec 31, 2018</p><p>And here we are, last hours of 2018 and I'm writing the last post of the year, hope you like it.</p><p>Throughout this tutorial I'll try to explain how to insert an UICollectionView in a TableViewCell. Each TableViewCell will have the name of the band and a CollectionView with the members of the band. I am assuming that you have read this <a href="https://pablogs.io/2018/11/30/TutorialTableViewXIB.html">post</a>. Here is the result</p><p align="center">
+  <img width="400" src="/images/posts/collectiontableview/result.png">
+</p><h3>Create the project</h3><ul><li>Open Xcode and create a Single View App.</li><li>First of all we are going to create our model (we have created createModel() function to populate data).</li></ul><pre><code><span class="keyword">struct</span> Band {
+    <span class="keyword">var</span> name: <span class="type">String</span>
+    <span class="keyword">var</span> image: <span class="type">UIImageView</span>
+    <span class="keyword">var</span> members: [<span class="type">String</span>]
+}
+</code></pre><ul><li>Open Main.storyboard file</li><li>Drag and drop an UITableView</li><li>Drag and drop an UITableViewCell</li><li>Select the Main.storyboard file and press Show assistant editor button.</li><li>Create the tableView IBOutlet in your ViewController</li></ul><h3>Create XIB file</h3><ul><li>Create a new User interface file. File-&gt; New File and name it BandCell.</li></ul><p align="center">
+  <img width="600" src="/images/posts/customcells/step5.png">
+</p><ul><li>Drop an UITableViewCell</li></ul><p align="center">
+  <img width="600" src="/images/posts/customcells/step6.png">
+</p><ul><li>Insert a UILabel (rock band name) and a UICollectionView (for members of the band) at the right of the UILabel</li></ul><p align="center">
+  <img width="600" src="/images/posts/collectiontableview/step9.png">
+</p><h3>Create the BandCell class</h3><ul><li>Create a new Cocoa Touch class and name it BandCell</li><li>In the BandCell.xib file<ul><li>open the Identity Inspector tab and in custom class type <strong>BandCell</strong>.</li><li>open the Attribute inspector tab and in Identifier type <strong>BandCellId</strong></li></ul></li></ul><p align="center">
+  <img width="300" src="/images/posts/customcells/step7.png">
+  <img width="300" src="/images/posts/customcells/step8.png">
+</p><ul><li>Create IBOutlets in BandCell class for UILabel and UICollectionView</li></ul><p align="center">
+  <img width="800" src="/images/posts/collectiontableview/step10.png">
+</p><pre><code><span class="keyword">@IBOutlet weak var</span> bandName: <span class="type">UILabel</span>!
+<span class="keyword">@IBOutlet weak var</span> collectionView: <span class="type">UICollectionView</span>!
+  ```
+
+
+- <span class="type">Add</span> a function to configure the data
+
+</code></pre><p>swift public func configureCell(band: Band) { self.bandName.text = band.name self.members = band.members }</p><pre><code>
+
+
+### <span class="type">Configure</span> tableView, and tableview's delegate and datasource
+
+- <span class="type">Register</span> the <span class="type">BandCell</span> nib and create <span class="type">UITableViewDataSource</span> functions
+
+
+</code></pre><p>swift override func viewDidLoad() { super.viewDidLoad() tableView.delegate = self tableView.dataSource = self tableView.register(UINib.init(nibName: "BandCell", bundle: nil), forCellReuseIdentifier: "BandCellId") tableView.tableFooterView = UIView() }</p><pre><code>
+
+
+</code></pre><p>swift extension ViewController: UITableViewDataSource { func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -&gt; Int { return model.count }</p><p>func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -&gt; UITableViewCell {</p><p>let cell = tableView.dequeueReusableCell(withIdentifier: "BandCellId") as! BandCell</p><p>cell.configureCell(band: model[indexPath.row])</p><p>return cell } }</p><pre><code>
+
+### <span class="type">Configure</span> collectionView, and collectionView's datasource
+
+<span class="type">Now</span> it's time <span class="keyword">for</span> our collectionView. <span class="type">In</span> our <span class="type">BandCell</span> <span class="keyword">class</span> we have an <span class="type">UICollectionView</span> and we have to <span class="keyword">do</span> the same process <span class="keyword">as</span> we did with our tableView. <span class="type">We</span> are going to create a <span class="type">MembersCVCell</span>.<span class="property">swift</span> and a <span class="type">MembersCVCell</span>.<span class="property">xib</span>.
+
+- <span class="type">MembersCVCell</span>.<span class="property">xib</span> will have a <span class="type">UILabel</span>
+- <span class="type">MembersCVCell</span>.<span class="property">swift</span> will extend <span class="type">UICollectionViewCell</span> and an <span class="type">IBOutlet</span>, just like this
+
+</code></pre><p>swift class MembersCVCell: UICollectionViewCell {</p><p>@IBOutlet weak var bandMember: UILabel!</p><p>func configureCell(bandMember: String) { self.bandMember.text = bandMember }</p><p>}</p><pre><code>- <span class="type">In BandCell</span>.<span class="property">swift</span> we have to setup the collectionView and <span class="type">UICollectionViewDataSource</span> functions
+
+</code></pre><p>swift override func awakeFromNib() { super.awakeFromNib() self.collectionView.register(UINib(nibName: "MembersCVCell", bundle: nil), forCellWithReuseIdentifier: "MembersId") collectionView.delegate = self collectionView.dataSource = self }</p><pre><code>
+</code></pre><p>swift extension BandCell: UICollectionViewDelegate, UICollectionViewDataSource { func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -&gt; Int { return members.count }</p><p>func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -&gt; UICollectionViewCell { let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "MembersId", for: indexPath) as! MembersCVCell</p><p>cell.configureCell(bandMember: members[indexPath.row])</p><p>return cell }</p><p>}</p><pre><code><span class="type">And</span> thats all. <span class="type">Pretty</span> easy, isn't it? here <span class="keyword">is</span> the [code](/images/posts/collectiontableview/<span class="type">CollectionInsideTable</span>.<span class="property">zip</span>)
+
+### <span class="type">Merry Christmas</span> and <span class="type">Happy New Year</span>
+</code></pre></div></article><footer><p>© 2021 Pablo Garcia. Built in Swift using <a href="https://github.com/johnsundell/publish" target="_blank" rel="noreferrer">Publish</a></p><p><a href="https://github.com/pablogsio" target="_blank" rel="noreferrer">GitHub</a> | <a href="https://pablogs.io/feed.rss">RSS Feed</a></p></footer></div></body></html>

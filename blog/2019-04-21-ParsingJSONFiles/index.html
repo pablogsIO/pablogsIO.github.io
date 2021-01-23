@@ -1,0 +1,181 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"/><meta name="og:site_name" content="Pablo Garcia"/><link rel="canonical" href="https://pablogs.io/blog/2019-04-21-ParsingJSONFiles"/><meta name="twitter:url" content="https://pablogs.io/blog/2019-04-21-ParsingJSONFiles"/><meta name="og:url" content="https://pablogs.io/blog/2019-04-21-ParsingJSONFiles"/><title>Parsing JSON files - Codable, A new hope | Pablo Garcia</title><meta name="twitter:title" content="Parsing JSON files - Codable, A new hope | Pablo Garcia"/><meta name="og:title" content="Parsing JSON files - Codable, A new hope | Pablo Garcia"/><meta name="description" content="For a long time, I've been using..."/><meta name="twitter:description" content="For a long time, I've been using..."/><meta name="og:description" content="For a long time, I've been using..."/><meta name="twitter:card" content="summary"/><link rel="stylesheet" href="/styles.css" type="text/css"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><link rel="shortcut icon" href="/images/favicon.png" type="image/png"/><link rel="alternate" href="/feed.rss" type="application/rss+xml" title="Subscribe to Pablo Garcia"/></head><body class="item-page"><div class="wrapper"><header><div class="header-divider"><div class="site"><a class="site-name" href="/">Pablo Garcia</a><p>Apps for iPhone, iPad, Apple TV and Apple Watch</p></div><nav class="header-nav"><ul class="header-ul"><li class="header-li"><a href="/home">home</a></li><li class="header-li"><a class="selected" href="/blog">blog</a></li><li class="header-li"><a href="/contact">contact</a></li></ul></nav></div></header><article><div class="content-post-detail"><h1 class="post-title">Parsing JSON files - Codable, A new hope</h1><p class="release-date">Apr 21, 2019</p><p>For a long time, I've been using <a href="https://github.com/SwiftyJSON/SwiftyJSON">swiftyjson</a> for parsing JSON files. It's a great library and if you, at some point, have had to work with JSON files, I'm pretty sure you've used it, am I right?</p><p>But Apple in 2017 gave us an easy way to work with JSON files: <strong>Codable</strong>. Codable is a typealias for <strong>Decodable</strong> and <strong>Encodable</strong> protocols.</p><h3>Simple data</h3><p>Let's see it in action. This will be our JSON file, a music album information:</p><pre><code>
+
+{
+ <span class="string">"name"</span>: <span class="string">"Love Over Gold"</span>,
+ <span class="string">"label"</span>: <span class="string">"Warner Bros"</span>,
+ <span class="string">"releaseDate"</span>: <span class="string">"1982-09-20T19:00:00Z"</span>
+}
+
+</code></pre><p>And this will be our representation in Swift of the JSON structure</p><pre><code>
+
+<span class="keyword">struct</span> Album: <span class="type">Codable</span> {
+    <span class="keyword">let</span> name: <span class="type">String</span>
+    <span class="keyword">let</span> label: <span class="type">String</span>
+    <span class="keyword">let</span> releaseDate: <span class="type">Date</span>
+}
+
+</code></pre><p>Album struct adopt the Codable protocol for encoding and decodign it.</p><pre><code>
+
+<span class="keyword">import</span> Foundation
+
+<span class="keyword">let</span> json = <span class="string">"""
+{
+ "name": "Love Over Gold",
+ "label": "Warner Bros",
+ "releaseDate": "1982-09-20T19:00:00Z"
+}
+"""</span>.<span class="call">data</span>(using: .<span class="dotAccess">utf8</span>)!
+
+
+<span class="keyword">struct</span> Album: <span class="type">Codable</span> {
+    <span class="keyword">let</span> name: <span class="type">String</span>
+    <span class="keyword">let</span> label: <span class="type">String</span>
+    <span class="keyword">let</span> releaseDate: <span class="type">Date</span>
+}
+
+<span class="comment">//Select our decoder and set the date decoding strategy to iso8601(https://en.wikipedia.org/wiki/ISO_8601)
+//The decoder will do the conversion between the JSON and our Swift structure</span>
+<span class="keyword">let</span> decoder = <span class="type">JSONDecoder</span>()
+
+decoder.<span class="property">dateDecodingStrategy</span> = .<span class="dotAccess">iso8601</span>
+
+<span class="keyword">let</span> album = <span class="keyword">try</span> decoder.<span class="call">decode</span>(<span class="type">Album</span>.<span class="keyword">self</span>, from: json)
+
+<span class="call">print</span>(album)
+
+</code></pre><p>And the result is....</p><pre><code>
+
+<span class="type">Album</span>(name: <span class="string">"Love Over Gold"</span>, label: <span class="string">"Warner Bros"</span>, releaseDate: <span class="number">1982</span>-<span class="number">09</span>-<span class="number">20 19</span>:<span class="number">00</span>:<span class="number">00</span> +<span class="number">0000</span>)
+
+</code></pre><p>What have just happened here?</p><p>The Codable protocol, which is actually not one protocol, but two, Decodable and Encodable</p><pre><code>
+
+<span class="keyword">public typealias</span> Codable = <span class="type">Decodable</span> &amp; <span class="type">Encodable</span>
+
+<span class="keyword">public protocol</span> Encodable {
+    <span class="keyword">public func</span> encode(to encoder: <span class="type">Encoder</span>) <span class="keyword">throws</span>
+}
+
+<span class="keyword">public protocol</span> Decodable {
+    <span class="keyword">public init</span>(from decoder: <span class="type">Decoder</span>) <span class="keyword">throws</span>
+}
+
+</code></pre><p>The <a href="https://developer.apple.com/documentation/swift/decodable">Decodable</a> protocol say that we have to implement the init function, but we didn't. So why this example has worked? because the Swift compiler has provided one for us, isn't it cute?</p><h3>Complex data</h3><p>Let's complicate a little bit our JSON file.</p><pre><code>
+
+{
+<span class="string">"band"</span>: <span class="string">"Dire Straits"</span>,
+<span class="string">"album"</span>: {
+    <span class="string">"name"</span>: <span class="string">"Love Over Gold"</span>,
+    <span class="string">"label"</span>: <span class="string">"Warner Bros"</span>,
+    <span class="string">"releaseDate"</span>: <span class="string">"1982-09-20T19:00:00Z"</span>
+    },
+<span class="string">"url"</span>: <span class="string">"https://www.markknopfler.com"</span>
+}
+
+</code></pre><p>We have added the name of the band and the url. Decoding is pretty easy:</p><pre><code><span class="keyword">import</span> Foundation
+
+<span class="keyword">let</span> json = <span class="string">"""
+{
+"band": "Dire Straits",
+"album": {
+    "name": "Love Over Gold",
+    "label": "Warner Bros",
+    "releaseDate": "1982-09-20T19:00:00Z"
+    },
+"band_url": "https://www.markknopfler.com"
+}
+"""</span>.<span class="call">data</span>(using: .<span class="dotAccess">utf8</span>)!
+</code></pre><pre><code>
+
+<span class="keyword">struct</span> Album: <span class="type">Codable</span> {
+    <span class="keyword">let</span> name: <span class="type">String</span>
+    <span class="keyword">let</span> label: <span class="type">String</span>
+    <span class="keyword">let</span> releaseDate: <span class="type">Date</span>
+}
+<span class="keyword">struct</span> Band: <span class="type">Codable</span> {
+    <span class="keyword">let</span> band: <span class="type">String</span>
+    <span class="keyword">let</span> album: <span class="type">Album</span>
+    <span class="keyword">let</span> band_url: <span class="type">URL</span>
+}
+
+<span class="keyword">let</span> decoder = <span class="type">JSONDecoder</span>()
+decoder.<span class="property">dateDecodingStrategy</span> = .<span class="dotAccess">iso8601</span>
+
+<span class="keyword">let</span> band = <span class="keyword">try</span> decoder.<span class="call">decode</span>(<span class="type">Band</span>.<span class="keyword">self</span>, from: json)
+
+<span class="call">print</span>(band)
+
+</code></pre><p><strong>Result</strong>:</p><pre><code>
+
+<span class="type">Band</span>(band: <span class="string">"Dire Straits"</span>, album: __lldb_expr_29.<span class="type">Album</span>(name: <span class="string">"Love Over Gold"</span>, label: <span class="string">"Warner Bros"</span>, releaseDate: <span class="number">1982</span>-<span class="number">09</span>-<span class="number">20 19</span>:<span class="number">00</span>:<span class="number">00</span> +<span class="number">0000</span>), url: https://www.<span class="property">markknopfler</span>.<span class="property">com</span>)
+
+</code></pre><h3>Properties customization</h3><p>There's one more thing that the compiler generated for us, and that is a private enum called CodingKeys. This enum adopt the <a href="https://developer.apple.com/documentation/swift/codingkey">CodingKey</a> protocol and is used by the decoder for encoding/decoding, if a property is not defined in this enum, will be ignored.</p><pre><code>
+
+<span class="keyword">private enum</span> CodingKeys: <span class="type">String</span>, <span class="type">CodingKey</span> {
+  <span class="keyword">case</span> band
+  <span class="keyword">case</span> album
+  <span class="keyword">case</span> band_url
+}
+
+</code></pre><p>The <strong>band_url</strong> property doesn't match the Swift naming convention, so let's do something about it. We will state that bandUrl property match with band_url.</p><pre><code>
+
+<span class="keyword">struct</span> Band: <span class="type">Codable</span> {
+    <span class="keyword">let</span> band: <span class="type">String</span>
+    <span class="keyword">let</span> album: <span class="type">Album</span>
+    <span class="keyword">let</span> bandUrl: <span class="type">URL</span>
+
+    <span class="keyword">private enum</span> CodingKeys: <span class="type">String</span>, <span class="type">CodingKey</span> {
+        <span class="keyword">case</span> band
+        <span class="keyword">case</span> album
+        <span class="keyword">case</span> bandUrl = <span class="string">"band_url"</span>
+    }
+}
+
+</code></pre><h3>Decodable customization</h3><p>We have customized our properties, now, we're going to customize the decodable by implementing init from decoder.</p><pre><code><span class="keyword">import</span> Foundation
+
+<span class="keyword">let</span> json = <span class="string">"""
+{
+"band": "Dire Straits",
+"album": {
+    "name": "Love Over Gold",
+    "label": "Warner Bros",
+    "releaseDate": "1982-09-20T21:00:00Z"
+    },
+"band_url": "https://www.markknopfler.com"
+}
+"""</span>.<span class="call">data</span>(using: .<span class="dotAccess">utf8</span>)!
+</code></pre><pre><code><span class="keyword">struct</span> Album: <span class="type">Codable</span> {
+    <span class="keyword">let</span> name: <span class="type">String</span>
+    <span class="keyword">let</span> label: <span class="type">String</span>
+    <span class="keyword">let</span> releaseDate: <span class="type">Date</span>
+}
+<span class="keyword">struct</span> Band: <span class="type">Codable</span> {
+    <span class="keyword">let</span> band: <span class="type">String</span>
+    <span class="keyword">let</span> album: <span class="type">Album</span>
+    <span class="keyword">let</span> bandUrl: <span class="type">URL</span>
+
+    <span class="keyword">private enum</span> CodingKeys: <span class="type">String</span>, <span class="type">CodingKey</span> {
+        <span class="keyword">case</span> band
+        <span class="keyword">case</span> album
+        <span class="keyword">case</span> bandUrl = <span class="string">"band_url"</span>
+    }
+
+    <span class="keyword">public init</span>(from decoder: <span class="type">Decoder</span>) <span class="keyword">throws</span> {
+        <span class="keyword">let</span> container = <span class="keyword">try</span> decoder.<span class="call">container</span>(keyedBy: <span class="type">CodingKeys</span>.<span class="keyword">self</span>)
+        band = <span class="keyword">try</span> container.<span class="call">decode</span>(<span class="type">String</span>.<span class="keyword">self</span>, forKey: .<span class="dotAccess">band</span>)
+        album = <span class="keyword">try</span> container.<span class="call">decode</span>(<span class="type">Album</span>.<span class="keyword">self</span>, forKey: .<span class="dotAccess">album</span>)
+        bandUrl = <span class="keyword">try</span> container.<span class="call">decode</span>(<span class="type">URL</span>.<span class="keyword">self</span>, forKey: .<span class="dotAccess">bandUrl</span>)
+    }
+}
+
+<span class="keyword">let</span> decoder = <span class="type">JSONDecoder</span>()
+decoder.<span class="property">dateDecodingStrategy</span> = .<span class="dotAccess">iso8601</span>
+
+<span class="keyword">let</span> band = <span class="keyword">try</span> decoder.<span class="call">decode</span>(<span class="type">Band</span>.<span class="keyword">self</span>, from: json)
+
+<span class="call">print</span>(band)
+
+</code></pre><pre><code>
+
+<span class="type">Band</span>(band: <span class="string">"Dire Straits"</span>, album: __lldb_expr_19.<span class="type">Album</span>(name: <span class="string">"Love Over Gold"</span>, label: <span class="string">"Warner Bros"</span>, releaseDate: <span class="number">1982</span>-<span class="number">09</span>-<span class="number">20 21</span>:<span class="number">00</span>:<span class="number">00</span> +<span class="number">0000</span>), bandUrl: https://www.<span class="property">markknopfler</span>.<span class="property">com</span>)
+
+</code></pre><h3>Conclusion</h3><p>I think this is a pretty step forward and we should give Codable a try.</p></div></article><footer><p>© 2021 Pablo Garcia. Built in Swift using <a href="https://github.com/johnsundell/publish" target="_blank" rel="noreferrer">Publish</a></p><p><a href="https://github.com/pablogsio" target="_blank" rel="noreferrer">GitHub</a> | <a href="https://pablogs.io/feed.rss">RSS Feed</a></p></footer></div></body></html>

@@ -1,0 +1,58 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"/><meta name="og:site_name" content="Pablo Garcia"/><link rel="canonical" href="https://pablogs.io/blog/2018-09-23-Fun%20with%20Enums"/><meta name="twitter:url" content="https://pablogs.io/blog/2018-09-23-Fun%20with%20Enums"/><meta name="og:url" content="https://pablogs.io/blog/2018-09-23-Fun%20with%20Enums"/><title>Fun with enums (Fun with flags) | Pablo Garcia</title><meta name="twitter:title" content="Fun with enums (Fun with flags) | Pablo Garcia"/><meta name="og:title" content="Fun with enums (Fun with flags) | Pablo Garcia"/><meta name="description" content="Swift enums are pretty awesome. For a person like me, whose first programming language was C (a long, long, long time ago), it's like a breath of fresh air."/><meta name="twitter:description" content="Swift enums are pretty awesome. For a person like me, whose first programming language was C (a long, long, long time ago), it's like a breath of fresh air."/><meta name="og:description" content="Swift enums are pretty awesome. For a person like me, whose first programming language was C (a long, long, long time ago), it's like a breath of fresh air."/><meta name="twitter:card" content="summary"/><link rel="stylesheet" href="/styles.css" type="text/css"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><link rel="shortcut icon" href="/images/favicon.png" type="image/png"/><link rel="alternate" href="/feed.rss" type="application/rss+xml" title="Subscribe to Pablo Garcia"/></head><body class="item-page"><div class="wrapper"><header><div class="header-divider"><div class="site"><a class="site-name" href="/">Pablo Garcia</a><p>Apps for iPhone, iPad, Apple TV and Apple Watch</p></div><nav class="header-nav"><ul class="header-ul"><li class="header-li"><a href="/home">home</a></li><li class="header-li"><a class="selected" href="/blog">blog</a></li><li class="header-li"><a href="/contact">contact</a></li></ul></nav></div></header><article><div class="content-post-detail"><h1 class="post-title">Fun with enums (Fun with flags)</h1><p class="release-date">Sep 23, 2018</p><h2>Fun with Enums - API Endpoint</h2><p>Swift enums are pretty awesome. For a person like me, whose first programming language was C (a long, long, long time ago), it's like a breath of fresh air.</p><p>Enums are first-class types and can adopt features traditionally supported only by classes:</p><ul><li>Conform to protocols</li><li>Computed properties</li><li>Instance methods</li><li>Initializers</li></ul><h3>Basic Enums</h3><p>Let's start with a classic example</p><pre><code><span class="keyword">enum</span> Guitar {
+  <span class="keyword">case</span> classical
+  <span class="keyword">case</span> electric
+  <span class="keyword">case</span> acoustic
+ }
+</code></pre><h3>Associated values</h3><p>Associated values are a perfect way to add additional information to enums. Imagine for instance that you would like to add some information to our enum example. A guitar has a serial number. An electric guitar could have one, two or more pickups, an acoustic guitar could be electrified or not and so on. Let's translate this into code.</p><pre><code><span class="keyword">enum</span> Guitar {
+    <span class="keyword">case</span> classical(serialNumber: <span class="type">String</span>)
+    <span class="keyword">case</span> electric(serialNumber: <span class="type">String</span>, pickups: <span class="type">Int</span>)
+    <span class="keyword">case</span> acoustic(serialNumber: <span class="type">String</span>, electrified: <span class="type">Bool</span>)
+}
+
+<span class="keyword">let</span> classicalGuitar = <span class="type">Guitar</span>.<span class="call">classical</span>(serialNumber: <span class="string">"SW87234"</span>)
+<span class="keyword">let</span> electricGuitar = <span class="type">Guitar</span>.<span class="call">electric</span>(serialNumber: <span class="string">"HG0983"</span>, pickups: <span class="number">2</span>)
+<span class="keyword">let</span> acousticGuitar = <span class="type">Guitar</span>.<span class="call">acoustic</span>(serialNumber: <span class="string">"JJ8888"</span>, electrified: <span class="keyword">false</span>)
+
+<span class="keyword">if case let</span> <span class="type">Guitar</span>.<span class="call">acoustic</span>(serialNumber, electrified) = acousticGuitar {
+
+    <span class="call">print</span>(<span class="string">"Acoustic guitar. Serial number</span>\(serialNumber)<span class="string">. Electrified:</span> \(electrified)<span class="string">"</span>)
+}
+</code></pre><p><strong>Output</strong>:</p><pre><code>  <span class="type">Acoustic</span> guitar. <span class="type">Serial</span> numberJJ8888. <span class="type">Electrified</span>: <span class="keyword">false</span>
+</code></pre><h3>Enums and protocols</h3><p>For example, we could model API Endpoints with enums. What we would like to do is build different endpoints based on our needs. Take the <a href="https://api.tfl.gov.uk/">TFL Unified API</a> for instance. To retrieve lines status for a few lines (victoria, piccadilly and central), we'd have to build something like this https://api.tfl.gov.uk//Line/victoria,piccadilly,central/Status</p><p>Wouldn't it be great if, with a simple line of code, we could get this url? That's pretty cool but you will say...Ooh great!....show me the code!!! Ok, let's do it.</p><p>We define a protocol with a url variable</p><pre><code><span class="keyword">protocol</span> EndPointProtocol {
+    <span class="keyword">var</span> url: <span class="type">URL</span> { <span class="keyword">get</span> }
+}
+</code></pre><pre><code><span class="keyword">enum</span> LineEndPoint {
+    <span class="keyword">case</span> validmodes
+    <span class="keyword">case</span> lineStatus([<span class="type">String</span>])
+}
+</code></pre><pre><code><span class="keyword">extension</span> <span class="type">LineEndPoint</span>: <span class="type">EndPointProtocol</span> {
+
+    <span class="keyword">var</span> url: <span class="type">URL</span> {
+
+        <span class="keyword">guard var</span> url = <span class="type">URLComponents</span>(string: <span class="string">"https://api.tfl.gov.uk"</span>) <span class="keyword">else</span> { <span class="call">fatalError</span>(<span class="string">"Error"</span>) }
+
+        <span class="keyword">switch self</span> {
+        <span class="keyword">case</span> .<span class="dotAccess">validmodes</span>:
+            url.<span class="property">path</span> = <span class="string">"/Line/Meta/Modes"</span>
+        <span class="keyword">case</span> .<span class="dotAccess">lineStatus</span>(<span class="keyword">let</span> idLines):
+            <span class="keyword">let</span> linesIdcommaseparated = <span class="call">getCommaSeparated</span>(array: idLines)
+            url.<span class="property">path</span> = <span class="string">"/Line/</span>\(linesIdcommaseparated)<span class="string">/Status"</span>
+        }
+
+        <span class="keyword">let</span> urlFinal = url.<span class="property">url</span>
+
+        <span class="keyword">return</span> urlFinal!
+    }
+
+    <span class="keyword">private func</span> getCommaSeparated(array: [<span class="type">String</span>]) -&gt; <span class="type">String</span> {
+        <span class="keyword">return</span> array.<span class="call">map</span> { <span class="type">String</span>($0)}.<span class="call">joined</span>(separator: <span class="string">","</span>)
+    }
+}
+
+</code></pre><p>The only thing we have to do is:</p><pre><code>
+
+<span class="keyword">let</span> lineStatus = <span class="type">LineEndPoint</span>.<span class="call">lineStatus</span>([<span class="string">"victoria"</span>,<span class="string">"piccadilly"</span>,<span class="string">"central"</span>])
+
+<span class="call">print</span>(<span class="string">"Line status endpoint:</span> \(lineStatus.<span class="property">url</span>)<span class="string">"</span>)
+</code></pre><p><strong>Output</strong>:</p><pre><code><span class="type">Line</span> status endpoint: https://api.<span class="property">tfl</span>.<span class="property">gov</span>.<span class="property">uk</span>/<span class="type">Line</span>/victoria,piccadilly,central/<span class="type">Status</span>
+</code></pre><p>And that's it. A fancy and elegant way of getting endpoints.</p></div></article><footer><p>© 2021 Pablo Garcia. Built in Swift using <a href="https://github.com/johnsundell/publish" target="_blank" rel="noreferrer">Publish</a></p><p><a href="https://github.com/pablogsio" target="_blank" rel="noreferrer">GitHub</a> | <a href="https://pablogs.io/feed.rss">RSS Feed</a></p></footer></div></body></html>
