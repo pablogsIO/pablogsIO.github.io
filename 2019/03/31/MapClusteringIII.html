@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name = "viewport" content = "width = 1200">
+	<link href='https://fonts.googleapis.com/css?family=PT+Sans+Caption:400,700' rel='stylesheet' type='text/css'>
+	<link rel="stylesheet" href="/styles.css" />
+	<link rel="stylesheet" href="/highlightswift.css" />
+	<title>Pablo Apps - Apps for iPhone, iPad and Apple TV</title>
+</head>
+
+<body>
+	<div id="wrapper">
+	<header>
+	
+
+<table>
+    <tr>
+        <td class="d1">
+            <hgroup>
+				<h1><a href="/">Pablo Garcia</a></h1>
+				<h2>Apps for iPhone, iPad, Apple TV and Apple Watch</h2>
+			</hgroup>
+        </td>
+        
+        <td class="d3">
+			<nav>
+				<ul>
+					<li><a href="/">Home</a></li>
+					<li><a href="/blog/">Blog</a></li>
+					<li><a href="/contact/">Contact</a></li>
+				</ul>
+				
+			</nav>
+        </td>
+        
+    </tr>
+</table>
+
+</header>
+
+	
+		
+    <div id="content">
+    	<div id="post">
+    		<article>
+                <div>
+    			<header>
+    				<h1>Quadtree and Map Clustering - III</h1>
+    				<time>March 31, 2019
+                </time>
+    			</header>
+
+				<p>In the previous <a href="https://pablogs.io/2019/02/06/MapClusteringII.html">post</a> we viewed how to cluster annotations. Now, let see it in a real map.</p>
+
+<p>Remember this image?</p>
+
+<p align="center">
+  <img width="300" src="/images/posts/clustering/iPhone.png" />
+</p>
+
+<p>Pretty overwhelming for the user, isn’t it? We will try to get something like this.</p>
+
+<p align="center">
+  <img width="300" src="/images/posts/clustering/clusterAnnotations.png" />
+</p>
+
+<p>The philosophy behind this image is the same as the previous posts. We have to create a QuadTree and ask this QuadTree for annotations in different regions of the visible map.</p>
+
+<p>QuadTree class is pretty similar to the one that we used.</p>
+
+<p>ClusterManager class will need to know the visible map region and the zoom level of the map for clustering annotations.</p>
+
+<p>Depending on the zoom level, we will divide the map region in cells of different size and we will use this cells to ask the QuadTree for annotations inside these cells.</p>
+
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+<span class="kd">class</span> <span class="kd">func</span> <span class="nf">cellSizeForZoomScale</span><span class="p">(</span><span class="nv">zoomScale</span><span class="p">:</span> <span class="kt">MKZoomScale</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Int</span> <span class="p">{</span>
+
+    <span class="k">let</span> <span class="nv">zoomLevel</span> <span class="o">=</span> <span class="nf">zoomScaleToZoomLevel</span><span class="p">(</span><span class="nv">scale</span><span class="p">:</span> <span class="n">zoomScale</span><span class="p">)</span>
+
+    <span class="k">switch</span> <span class="n">zoomLevel</span> <span class="p">{</span>
+    <span class="k">case</span> <span class="mi">0</span><span class="o">...</span><span class="mi">4</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mi">32</span>
+    <span class="k">case</span> <span class="mi">5</span><span class="o">...</span><span class="mi">8</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mi">16</span>
+    <span class="k">case</span> <span class="mi">9</span><span class="o">...</span><span class="mi">16</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mi">8</span>
+    <span class="k">case</span> <span class="mi">17</span><span class="o">...</span><span class="mi">20</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mi">4</span>
+    <span class="k">default</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mi">10</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+</code></pre></div></div>
+
+<p>The function clusterAnnotationWithinMapRectangle will do…</p>
+
+<ul>
+  <li>Calculate de size of the cell</li>
+  <li>Ask the QuadTree for annotations</li>
+  <li>Display annotations on the map.</li>
+</ul>
+
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+<span class="kd">public</span> <span class="kd">func</span> <span class="nf">clusterAnnotationWithinMapRectangle</span><span class="p">(</span><span class="nv">visibleMapRect</span><span class="p">:</span> <span class="kt">MKMapRect</span><span class="p">,</span> <span class="nv">zoomScale</span><span class="p">:</span> <span class="kt">Double</span><span class="p">)</span> <span class="p">{</span>
+
+        <span class="k">guard</span> <span class="o">!</span><span class="n">zoomScale</span><span class="o">.</span><span class="n">isInfinite</span> <span class="k">else</span> <span class="p">{</span>
+            <span class="k">return</span>
+        <span class="p">}</span>
+        <span class="k">var</span> <span class="nv">clusterAnnotations</span> <span class="o">=</span> <span class="p">[</span><span class="kt">MKAnnotation</span><span class="p">]()</span>
+        <span class="k">let</span> <span class="nv">cellSizePoints</span> <span class="o">=</span> <span class="kt">Double</span><span class="p">(</span><span class="n">visibleMapRect</span><span class="o">.</span><span class="n">size</span><span class="o">.</span><span class="n">width</span><span class="o">/</span><span class="kt">Double</span><span class="p">(</span><span class="kt">PGClusteringManager</span><span class="o">.</span><span class="nf">cellSizeForZoomScale</span><span class="p">(</span><span class="nv">zoomScale</span><span class="p">:</span> <span class="kt">MKZoomScale</span><span class="p">(</span><span class="n">zoomScale</span><span class="p">))))</span>
+        <span class="k">let</span> <span class="nv">minX</span> <span class="o">=</span> <span class="n">visibleMapRect</span><span class="o">.</span><span class="n">minX</span>
+        <span class="k">let</span> <span class="nv">maxX</span> <span class="o">=</span> <span class="n">visibleMapRect</span><span class="o">.</span><span class="n">maxX</span>
+        <span class="k">let</span> <span class="nv">minY</span> <span class="o">=</span> <span class="n">visibleMapRect</span><span class="o">.</span><span class="n">minY</span>
+        <span class="k">let</span> <span class="nv">maxY</span> <span class="o">=</span> <span class="n">visibleMapRect</span><span class="o">.</span><span class="n">maxY</span>
+
+        <span class="n">operationQueue</span><span class="o">.</span><span class="nf">cancelAllOperations</span><span class="p">()</span>
+        <span class="n">operationQueue</span><span class="o">.</span><span class="n">addOperation</span> <span class="p">{</span>
+
+            <span class="k">var</span> <span class="nv">yCoordinate</span> <span class="o">=</span> <span class="n">minY</span>
+
+            <span class="k">while</span> <span class="n">yCoordinate</span><span class="o">&lt;</span><span class="n">maxY</span> <span class="p">{</span>
+                <span class="k">var</span> <span class="nv">xCoordinate</span> <span class="o">=</span> <span class="n">minX</span>
+
+                <span class="k">while</span> <span class="n">xCoordinate</span><span class="o">&lt;</span><span class="n">maxX</span> <span class="p">{</span>
+                    <span class="k">let</span> <span class="nv">area</span> <span class="o">=</span> <span class="kt">PGBoundingBox</span><span class="o">.</span><span class="nf">mapRectToBoundingBox</span><span class="p">(</span><span class="nv">mapRect</span><span class="p">:</span> <span class="kt">MKMapRect</span><span class="p">(</span><span class="nv">x</span><span class="p">:</span> <span class="n">xCoordinate</span><span class="p">,</span> <span class="nv">y</span><span class="p">:</span> <span class="n">yCoordinate</span><span class="p">,</span> <span class="nv">width</span><span class="p">:</span> <span class="n">cellSizePoints</span><span class="p">,</span> <span class="nv">height</span><span class="p">:</span> <span class="n">cellSizePoints</span><span class="p">))</span>
+                    <span class="k">self</span><span class="o">.</span><span class="n">quadTree</span><span class="o">.</span><span class="nf">queryRegion</span><span class="p">(</span><span class="nv">searchInBoundingBox</span><span class="p">:</span> <span class="n">area</span><span class="p">)</span> <span class="p">{</span> <span class="p">(</span><span class="n">annotations</span><span class="p">)</span> <span class="k">in</span>
+
+                        <span class="k">if</span> <span class="n">annotations</span><span class="o">.</span><span class="n">count</span><span class="o">&gt;</span><span class="mi">1</span> <span class="p">{</span>
+                            <span class="k">var</span> <span class="nv">totalX</span> <span class="o">=</span> <span class="mf">0.0</span>
+                            <span class="k">var</span> <span class="nv">totalY</span> <span class="o">=</span> <span class="mf">0.0</span>
+
+                            <span class="k">for</span> <span class="n">annotation</span> <span class="k">in</span> <span class="n">annotations</span> <span class="p">{</span>
+                                <span class="n">totalX</span> <span class="o">+=</span> <span class="n">annotation</span><span class="o">.</span><span class="n">coordinate</span><span class="o">.</span><span class="n">latitude</span>
+                                <span class="n">totalY</span> <span class="o">+=</span> <span class="n">annotation</span><span class="o">.</span><span class="n">coordinate</span><span class="o">.</span><span class="n">longitude</span>
+                            <span class="p">}</span>
+                            <span class="k">let</span> <span class="nv">totalAnnotations</span> <span class="o">=</span> <span class="n">annotations</span><span class="o">.</span><span class="n">count</span>
+
+                            <span class="n">clusterAnnotations</span><span class="o">.</span><span class="nf">append</span><span class="p">(</span><span class="kt">PGAnnotation</span><span class="p">(</span><span class="nv">coordinate</span><span class="p">:</span> <span class="kt">CLLocationCoordinate2D</span><span class="p">(</span><span class="nv">latitude</span><span class="p">:</span> <span class="n">totalX</span><span class="o">/</span><span class="kt">Double</span><span class="p">(</span><span class="n">totalAnnotations</span><span class="p">),</span> <span class="nv">longitude</span><span class="p">:</span> <span class="n">totalY</span><span class="o">/</span><span class="kt">Double</span><span class="p">(</span><span class="n">totalAnnotations</span><span class="p">)),</span> <span class="nv">title</span><span class="p">:</span> <span class="s">"</span><span class="se">\(</span><span class="n">annotations</span><span class="o">.</span><span class="n">count</span><span class="se">)</span><span class="s">"</span><span class="p">,</span> <span class="nv">subtitle</span><span class="p">:</span> <span class="s">"Clustered"</span><span class="p">))</span>
+                        <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="n">annotations</span><span class="o">.</span><span class="n">count</span> <span class="o">==</span> <span class="mi">1</span> <span class="p">{</span>
+                            <span class="n">clusterAnnotations</span><span class="o">.</span><span class="nf">append</span><span class="p">(</span><span class="n">annotations</span><span class="o">.</span><span class="n">first</span><span class="o">!</span><span class="p">)</span>
+                        <span class="p">}</span>
+                    <span class="p">}</span>
+                    <span class="n">xCoordinate</span><span class="o">+=</span><span class="n">cellSizePoints</span>
+                <span class="p">}</span>
+                <span class="n">yCoordinate</span><span class="o">+=</span><span class="n">cellSizePoints</span>
+            <span class="p">}</span>
+            <span class="k">self</span><span class="o">.</span><span class="n">delegate</span><span class="p">?</span><span class="o">.</span><span class="nf">displayAnnotations</span><span class="p">(</span><span class="nv">annotations</span><span class="p">:</span> <span class="n">clusterAnnotations</span><span class="p">)</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+</code></pre></div></div>
+
+<p>And that’s it. You have an example <a href="https://github.com/pablogsIO/PGClustering">here</a></p>
+
+<p>Enjoy!!</p>
+
+
+                <div id="post-divider">
+                    <section id="pagination">
+                        
+                        <a class="pagination-previous" href="/2019/04/21/ParsingJSONFiles.html">Parsing JSON files - Codable, A new hope &raquo</a>
+                        
+                        
+                        <a class="pagination-next" href="/2019/02/06/MapClusteringII.html">&laquo; Quadtree and Map Clustering - II </a>
+                                
+                    </section>
+                </div>
+            </div>
+
+			</article>    
+    	</div>
+
+	</div>
+    
+	<footer>	
+	<p>&copy; 2018 <a href="mailto:pablo@pablogs.io">Pablo Garcia. </a><a href="https://jekyllrb.com">Powered by Jekyll</a></p>
+</footer>
+
+</body>
+
+</html>
+
+

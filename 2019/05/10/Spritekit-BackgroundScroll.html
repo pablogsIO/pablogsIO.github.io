@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name = "viewport" content = "width = 1200">
+	<link href='https://fonts.googleapis.com/css?family=PT+Sans+Caption:400,700' rel='stylesheet' type='text/css'>
+	<link rel="stylesheet" href="/styles.css" />
+	<link rel="stylesheet" href="/highlightswift.css" />
+	<title>Pablo Apps - Apps for iPhone, iPad and Apple TV</title>
+</head>
+
+<body>
+	<div id="wrapper">
+	<header>
+	
+
+<table>
+    <tr>
+        <td class="d1">
+            <hgroup>
+				<h1><a href="/">Pablo Garcia</a></h1>
+				<h2>Apps for iPhone, iPad, Apple TV and Apple Watch</h2>
+			</hgroup>
+        </td>
+        
+        <td class="d3">
+			<nav>
+				<ul>
+					<li><a href="/">Home</a></li>
+					<li><a href="/blog/">Blog</a></li>
+					<li><a href="/contact/">Contact</a></li>
+				</ul>
+				
+			</nav>
+        </td>
+        
+    </tr>
+</table>
+
+</header>
+
+	
+		
+    <div id="content">
+    	<div id="post">
+    		<article>
+                <div>
+    			<header>
+    				<h1>Spritekit - Background Scrolling - I</h1>
+    				<time>May 10, 2019
+                </time>
+    			</header>
+
+				<p>There are a lot of games using Infinite-Scrolling-Background technique to simulate characters movement. The character is always on the same place in the screen and the background (buildings, trees, clouds…) moves toward left or right, depending on whether the character is moving to the right or to the left. We have this image:</p>
+
+<p align="center">
+  <img width="400" src="/images/posts/spritekit/backgroundscroll/bg.png" />
+</p>
+
+<p>With this technique we’d have something like this:</p>
+
+<p align="center">
+  <img width="400" src="/images/posts/spritekit/backgroundscroll/background.gif" />
+</p>
+
+<p>But, how could we achieve something like that? Do we have to have an infinite image? The solution is very simple. Have a look at this gif:</p>
+
+<p align="center">
+  <img width="400" src="/images/posts/spritekit/backgroundscroll/bgscroll.gif" />
+</p>
+
+<p>In this gif, we have simulated the screen (lines in red) and four consecutives backgrounds (white, blue, red and green), when a background get off the screen we put it at the end and so on. Easy, isn’t it?</p>
+
+<h3 id="first-approach">First approach</h3>
+
+<p>I have created BackgroundScroll class to achieve this (bear in mind that positions are relative to the left red line)</p>
+
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+<span class="kd">import</span> <span class="kt">SpriteKit</span>
+
+<span class="kd">class</span> <span class="kt">BackgroundScroll</span> <span class="p">{</span>
+
+    <span class="kd">private</span> <span class="k">let</span> <span class="nv">backgrounds</span><span class="p">:</span> <span class="p">[</span><span class="kt">SKSpriteNode</span><span class="p">]</span>
+    <span class="kd">private</span> <span class="k">unowned</span> <span class="k">let</span> <span class="nv">scene</span><span class="p">:</span> <span class="kt">SKScene</span>
+    <span class="kd">private</span> <span class="k">let</span> <span class="nv">speed</span><span class="p">:</span> <span class="kt">CGFloat</span> <span class="o">=</span> <span class="mi">25</span>
+    <span class="kd">private</span> <span class="k">var</span> <span class="nv">totalWidth</span><span class="p">:</span> <span class="kt">CGFloat</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="nf">init</span><span class="p">?(</span><span class="nv">backgrounds</span><span class="p">:</span> <span class="p">[</span><span class="kt">SKSpriteNode</span><span class="p">],</span> <span class="nv">scene</span><span class="p">:</span> <span class="kt">SKScene</span><span class="p">){</span>
+        <span class="k">guard</span> <span class="n">backgrounds</span><span class="o">.</span><span class="n">count</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="k">else</span> <span class="p">{</span>
+            <span class="nf">print</span><span class="p">(</span><span class="s">"You have to include at least two backgrounds"</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">nil</span>
+        <span class="p">}</span>
+        <span class="k">self</span><span class="o">.</span><span class="n">scene</span> <span class="o">=</span> <span class="n">scene</span>
+        <span class="k">self</span><span class="o">.</span><span class="n">backgrounds</span> <span class="o">=</span> <span class="n">backgrounds</span>
+        <span class="nf">addBackgroundsToSceneAndCalculateTotalWidth</span><span class="p">()</span>
+
+    <span class="p">}</span>
+
+    <span class="kd">private</span> <span class="kd">func</span> <span class="nf">addBackgroundsToSceneAndCalculateTotalWidth</span><span class="p">()</span> <span class="p">{</span>
+
+        <span class="k">for</span> <span class="n">background</span> <span class="k">in</span> <span class="n">backgrounds</span> <span class="p">{</span>
+            <span class="k">self</span><span class="o">.</span><span class="n">scene</span><span class="o">.</span><span class="nf">addChild</span><span class="p">(</span><span class="n">background</span><span class="p">)</span>
+            <span class="n">totalWidth</span><span class="o">+=</span><span class="n">background</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">width</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+
+    <span class="kd">public</span> <span class="kd">func</span> <span class="nf">scrollRight</span><span class="p">()</span> <span class="p">{</span>
+        <span class="k">var</span> <span class="nv">offset</span><span class="p">:</span> <span class="kt">CGFloat</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">var</span> <span class="nv">spaceToBeOutsideScene</span><span class="p">:</span> <span class="kt">CGFloat</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">let</span> <span class="nv">xOrigin</span> <span class="o">=</span> <span class="k">self</span><span class="o">.</span><span class="n">scene</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">width</span><span class="o">/</span><span class="mi">2</span>
+
+        <span class="k">for</span> <span class="n">node</span> <span class="k">in</span> <span class="n">backgrounds</span> <span class="p">{</span>
+            <span class="n">spaceToBeOutsideScene</span> <span class="o">+=</span> <span class="n">node</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">width</span>
+            <span class="n">node</span><span class="o">.</span><span class="n">position</span> <span class="o">=</span> <span class="kt">CGPoint</span><span class="p">(</span><span class="nv">x</span><span class="p">:</span> <span class="n">xOrigin</span><span class="o">+</span><span class="n">offset</span><span class="o">+</span><span class="n">node</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">width</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="nv">y</span><span class="p">:</span> <span class="k">self</span><span class="o">.</span><span class="n">scene</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">height</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span>
+            <span class="k">let</span> <span class="nv">actionMoveOutsideScene</span> <span class="o">=</span> <span class="kt">SKAction</span><span class="o">.</span><span class="nf">moveTo</span><span class="p">(</span><span class="nv">x</span><span class="p">:</span> <span class="n">xOrigin</span><span class="o">-</span><span class="n">node</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">width</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="nv">duration</span><span class="p">:</span> <span class="kt">TimeInterval</span><span class="p">(</span><span class="n">spaceToBeOutsideScene</span><span class="o">/</span><span class="n">speed</span><span class="p">))</span>
+            <span class="k">let</span> <span class="nv">actionMoveRightToLeft</span> <span class="o">=</span> <span class="kt">SKAction</span><span class="o">.</span><span class="nf">moveTo</span><span class="p">(</span><span class="nv">x</span><span class="p">:</span> <span class="n">xOrigin</span><span class="o">-</span><span class="n">node</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">width</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="nv">duration</span><span class="p">:</span> <span class="kt">TimeInterval</span><span class="p">((</span><span class="n">totalWidth</span><span class="p">)</span><span class="o">/</span><span class="n">speed</span><span class="p">))</span>
+            <span class="k">let</span> <span class="nv">actionMoveToLastPosition</span> <span class="o">=</span> <span class="kt">SKAction</span><span class="o">.</span><span class="nf">moveTo</span><span class="p">(</span><span class="nv">x</span><span class="p">:</span> <span class="n">xOrigin</span><span class="o">+</span><span class="n">totalWidth</span><span class="o">-</span><span class="n">node</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">width</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="nv">duration</span><span class="p">:</span> <span class="mi">0</span><span class="p">)</span>
+            <span class="n">offset</span> <span class="o">+=</span> <span class="n">node</span><span class="o">.</span><span class="n">size</span><span class="o">.</span><span class="n">width</span>
+            <span class="n">node</span><span class="o">.</span><span class="nf">run</span><span class="p">(</span><span class="kt">SKAction</span><span class="o">.</span><span class="nf">sequence</span><span class="p">([</span><span class="n">actionMoveOutsideScene</span><span class="p">,</span> <span class="kt">SKAction</span><span class="o">.</span><span class="nf">repeatForever</span><span class="p">(</span><span class="kt">SKAction</span><span class="o">.</span><span class="nf">sequence</span><span class="p">([</span><span class="n">actionMoveToLastPosition</span><span class="p">,</span><span class="n">actionMoveRightToLeft</span><span class="p">]))]))</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+
+<span class="p">}</span>
+
+</code></pre></div></div>
+
+<p>What we have done is to create SKActions to move the backgrounds from right toward left.</p>
+
+<h3 id="second-approach">Second approach</h3>
+
+<p>There is another way of doing this. We are going to update the backgrounds positions every single time the update function in MainScene is called. We’ll use a double linkedlist for that. Each cycle, we’ll update the head node position, the next node position will be relative to the previous one and so on.</p>
+
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+<span class="kd">class</span> <span class="kt">BackgroundScroll</span> <span class="p">{</span>
+
+    <span class="kd">private</span> <span class="k">let</span> <span class="nv">backgrounds</span><span class="p">:</span> <span class="p">[</span><span class="kt">SKSpriteNode</span><span class="p">]</span>
+    <span class="kd">private</span> <span class="k">var</span> <span class="nv">linkedBackgrounds</span> <span class="o">=</span> <span class="kt">LinkedList</span><span class="o">&lt;</span><span class="kt">SKSpriteNode</span><span class="o">&gt;</span><span class="p">()</span>
+
+    <span class="kd">private</span> <span class="k">unowned</span> <span class="k">let</span> <span class="nv">scene</span><span class="p">:</span> <span class="kt">SKScene</span>
+    <span class="kd">private</span> <span class="k">let</span> <span class="nv">speed</span><span class="p">:</span> <span class="kt">CGFloat</span> <span class="o">=</span> <span class="mi">25</span>
+    <span class="kd">private</span> <span class="k">var</span> <span class="nv">totalWidth</span><span class="p">:</span> <span class="kt">CGFloat</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="nf">init</span><span class="p">?(</span><span class="nv">sprites</span><span class="p">:</span> <span class="p">[</span><span class="kt">SKSpriteNode</span><span class="p">],</span> <span class="nv">scene</span><span class="p">:</span> <span class="kt">SKScene</span><span class="p">,</span> <span class="nv">implementation</span><span class="p">:</span> <span class="kt">Implementation</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">guard</span> <span class="n">sprites</span><span class="o">.</span><span class="n">count</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="k">else</span> <span class="p">{</span>
+            <span class="nf">print</span><span class="p">(</span><span class="s">"You have to include at least two backgrounds"</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">nil</span>
+        <span class="p">}</span>
+        <span class="k">self</span><span class="o">.</span><span class="n">scene</span> <span class="o">=</span> <span class="n">scene</span>
+        <span class="k">self</span><span class="o">.</span><span class="n">backgrounds</span> <span class="o">=</span> <span class="n">sprites</span>
+        <span class="k">switch</span> <span class="n">implementation</span> <span class="p">{</span>
+        <span class="k">case</span> <span class="o">.</span><span class="nv">actions</span><span class="p">:</span>
+            <span class="nf">addBackgroundsToSceneAndCalculateTotalWidth</span><span class="p">()</span>
+        <span class="k">case</span> <span class="o">.</span><span class="nv">linkedlist</span><span class="p">:</span>
+            <span class="nf">createLinkedList</span><span class="p">()</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+
+    <span class="kd">private</span> <span class="kd">func</span> <span class="nf">addBackgroundsToSceneAndCalculateTotalWidth</span><span class="p">()</span> <span class="p">{</span>
+
+        <span class="k">for</span> <span class="n">background</span> <span class="k">in</span> <span class="n">backgrounds</span> <span class="p">{</span>
+            <span class="k">self</span><span class="o">.</span><span class="n">scene</span><span class="o">.</span><span class="nf">addChild</span><span class="p">(</span><span class="n">background</span><span class="p">)</span>
+            <span class="n">totalWidth</span><span class="o">+=</span><span class="n">background</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">width</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+
+    <span class="kd">private</span> <span class="kd">func</span> <span class="nf">createLinkedList</span><span class="p">()</span> <span class="p">{</span>
+        <span class="k">var</span> <span class="nv">offset</span><span class="p">:</span> <span class="kt">CGFloat</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">let</span> <span class="nv">xOrigin</span> <span class="o">=</span> <span class="k">self</span><span class="o">.</span><span class="n">scene</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">width</span><span class="o">/</span><span class="mi">2</span>
+
+        <span class="k">for</span> <span class="n">sprite</span> <span class="k">in</span> <span class="n">backgrounds</span> <span class="p">{</span>
+            <span class="n">sprite</span><span class="o">.</span><span class="n">position</span> <span class="o">=</span> <span class="kt">CGPoint</span><span class="p">(</span><span class="nv">x</span><span class="p">:</span> <span class="n">xOrigin</span><span class="o">+</span><span class="n">offset</span><span class="o">+</span><span class="n">sprite</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">width</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="nv">y</span><span class="p">:</span> <span class="k">self</span><span class="o">.</span><span class="n">scene</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">height</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span>
+            <span class="n">linkedBackgrounds</span><span class="o">.</span><span class="nf">append</span><span class="p">(</span><span class="nv">value</span><span class="p">:</span> <span class="n">sprite</span><span class="p">)</span>
+            <span class="k">self</span><span class="o">.</span><span class="n">scene</span><span class="o">.</span><span class="nf">addChild</span><span class="p">(</span><span class="n">sprite</span><span class="p">)</span>
+            <span class="n">offset</span> <span class="o">+=</span> <span class="n">sprite</span><span class="o">.</span><span class="n">size</span><span class="o">.</span><span class="n">width</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+
+    <span class="kd">public</span> <span class="kd">func</span> <span class="nf">scrollRight</span><span class="p">()</span> <span class="p">{</span>
+        <span class="k">var</span> <span class="nv">offset</span><span class="p">:</span> <span class="kt">CGFloat</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">var</span> <span class="nv">spaceToBeOutsideScene</span><span class="p">:</span> <span class="kt">CGFloat</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">let</span> <span class="nv">xOrigin</span> <span class="o">=</span> <span class="k">self</span><span class="o">.</span><span class="n">scene</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">width</span><span class="o">/</span><span class="mi">2</span>
+
+        <span class="k">for</span> <span class="n">node</span> <span class="k">in</span> <span class="n">backgrounds</span> <span class="p">{</span>
+            <span class="n">spaceToBeOutsideScene</span> <span class="o">+=</span> <span class="n">node</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">width</span>
+            <span class="n">node</span><span class="o">.</span><span class="n">position</span> <span class="o">=</span> <span class="kt">CGPoint</span><span class="p">(</span><span class="nv">x</span><span class="p">:</span> <span class="n">xOrigin</span><span class="o">+</span><span class="n">offset</span><span class="o">+</span><span class="n">node</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">width</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="nv">y</span><span class="p">:</span> <span class="k">self</span><span class="o">.</span><span class="n">scene</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">height</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span>
+            <span class="k">let</span> <span class="nv">actionMoveOutsideScene</span> <span class="o">=</span> <span class="kt">SKAction</span><span class="o">.</span><span class="nf">moveTo</span><span class="p">(</span><span class="nv">x</span><span class="p">:</span> <span class="n">xOrigin</span><span class="o">-</span><span class="n">node</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">width</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span>
+                                                         <span class="nv">duration</span><span class="p">:</span> <span class="kt">TimeInterval</span><span class="p">(</span><span class="n">spaceToBeOutsideScene</span><span class="o">/</span><span class="n">speed</span><span class="p">))</span>
+            <span class="k">let</span> <span class="nv">actionMoveRightToLeft</span> <span class="o">=</span> <span class="kt">SKAction</span><span class="o">.</span><span class="nf">moveTo</span><span class="p">(</span><span class="nv">x</span><span class="p">:</span> <span class="n">xOrigin</span><span class="o">-</span><span class="n">node</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">width</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span>
+                                                        <span class="nv">duration</span><span class="p">:</span> <span class="kt">TimeInterval</span><span class="p">((</span><span class="n">totalWidth</span><span class="p">)</span><span class="o">/</span><span class="n">speed</span><span class="p">))</span>
+            <span class="k">let</span> <span class="nv">actionMoveToLastPosition</span> <span class="o">=</span> <span class="kt">SKAction</span><span class="o">.</span><span class="nf">moveTo</span><span class="p">(</span><span class="nv">x</span><span class="p">:</span> <span class="n">xOrigin</span><span class="o">+</span><span class="n">totalWidth</span><span class="o">-</span><span class="n">node</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">width</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="nv">duration</span><span class="p">:</span> <span class="mi">0</span><span class="p">)</span>
+            <span class="n">offset</span> <span class="o">+=</span> <span class="n">node</span><span class="o">.</span><span class="n">size</span><span class="o">.</span><span class="n">width</span>
+            <span class="n">node</span><span class="o">.</span><span class="nf">run</span><span class="p">(</span><span class="kt">SKAction</span><span class="o">.</span><span class="nf">sequence</span><span class="p">([</span><span class="n">actionMoveOutsideScene</span><span class="p">,</span> <span class="kt">SKAction</span><span class="o">.</span><span class="nf">repeatForever</span><span class="p">(</span><span class="kt">SKAction</span><span class="o">.</span><span class="nf">sequence</span><span class="p">([</span><span class="n">actionMoveToLastPosition</span><span class="p">,</span> <span class="n">actionMoveRightToLeft</span><span class="p">]))]))</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+
+    <span class="kd">public</span> <span class="kd">func</span> <span class="nf">update</span><span class="p">(</span><span class="nv">deltaTime</span><span class="p">:</span> <span class="kt">TimeInterval</span><span class="p">)</span> <span class="p">{</span>
+
+        <span class="k">guard</span> <span class="o">!</span><span class="n">linkedBackgrounds</span><span class="o">.</span><span class="n">isEmpty</span> <span class="k">else</span> <span class="p">{</span>
+            <span class="k">return</span>
+        <span class="p">}</span>
+
+        <span class="k">if</span> <span class="k">let</span> <span class="nv">head</span> <span class="o">=</span> <span class="n">linkedBackgrounds</span><span class="o">.</span><span class="n">first</span> <span class="p">{</span>
+            <span class="k">let</span> <span class="nv">headSprite</span> <span class="o">=</span> <span class="n">head</span><span class="o">.</span><span class="n">value</span>
+            <span class="n">headSprite</span><span class="o">.</span><span class="n">position</span> <span class="o">=</span> <span class="kt">CGPoint</span><span class="p">(</span><span class="nv">x</span><span class="p">:</span> <span class="n">headSprite</span><span class="o">.</span><span class="n">position</span><span class="o">.</span><span class="n">x</span><span class="o">-</span><span class="kt">CGFloat</span><span class="p">(</span><span class="n">deltaTime</span><span class="p">)</span><span class="o">*</span><span class="n">speed</span><span class="p">,</span> <span class="nv">y</span><span class="p">:</span> <span class="n">headSprite</span><span class="o">.</span><span class="n">position</span><span class="o">.</span><span class="n">y</span><span class="p">)</span>
+            <span class="k">var</span> <span class="nv">node</span> <span class="o">=</span> <span class="n">linkedBackgrounds</span><span class="o">.</span><span class="n">first</span>
+            <span class="k">while</span> <span class="n">node</span><span class="p">?</span><span class="o">.</span><span class="n">next</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+                <span class="k">let</span> <span class="nv">previous</span> <span class="o">=</span> <span class="n">node</span>
+                <span class="n">node</span> <span class="o">=</span> <span class="n">node</span><span class="p">?</span><span class="o">.</span><span class="n">next</span>
+                <span class="n">node</span><span class="p">?</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">position</span> <span class="o">=</span> <span class="kt">CGPoint</span><span class="p">(</span><span class="nv">x</span><span class="p">:</span> <span class="p">(</span><span class="n">previous</span><span class="p">?</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">position</span><span class="o">.</span><span class="n">x</span><span class="p">)</span><span class="o">!+</span><span class="p">(</span><span class="n">previous</span><span class="p">?</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">width</span><span class="p">)</span><span class="o">!</span><span class="p">,</span>
+                                               <span class="nv">y</span><span class="p">:</span> <span class="p">(</span><span class="n">previous</span><span class="p">?</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">position</span><span class="o">.</span><span class="n">y</span><span class="p">)</span><span class="o">!</span><span class="p">)</span>
+            <span class="p">}</span>
+            <span class="k">if</span> <span class="nf">spriteIsOutOfBounds</span><span class="p">(</span><span class="nv">sprite</span><span class="p">:</span> <span class="n">head</span><span class="o">.</span><span class="n">value</span><span class="p">)</span> <span class="p">{</span>
+                <span class="k">let</span> <span class="nv">node</span> <span class="o">=</span> <span class="n">linkedBackgrounds</span><span class="o">.</span><span class="nf">remove</span><span class="p">(</span><span class="nv">node</span><span class="p">:</span> <span class="n">head</span><span class="p">)</span>
+                <span class="n">linkedBackgrounds</span><span class="o">.</span><span class="nf">append</span><span class="p">(</span><span class="nv">value</span><span class="p">:</span> <span class="n">node</span><span class="p">)</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+
+    <span class="p">}</span>
+
+    <span class="kd">private</span> <span class="kd">func</span> <span class="nf">spriteIsOutOfBounds</span><span class="p">(</span><span class="nv">sprite</span><span class="p">:</span> <span class="kt">SKSpriteNode</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Bool</span> <span class="p">{</span>
+
+        <span class="k">let</span> <span class="nv">origin</span> <span class="o">=</span> <span class="k">self</span><span class="o">.</span><span class="n">scene</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">width</span><span class="o">/</span><span class="mi">2</span>
+
+        <span class="k">let</span> <span class="nv">outOfBounds</span> <span class="o">=</span> <span class="p">(</span><span class="n">sprite</span><span class="o">.</span><span class="n">position</span><span class="o">.</span><span class="n">x</span><span class="o">+</span><span class="n">sprite</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">width</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span><span class="o">&lt;</span><span class="n">origin</span>
+
+        <span class="k">return</span> <span class="n">outOfBounds</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+
+</code></pre></div></div>
+<p>You have the code <a href="https://github.com/pablogsIO/pablogsIO.github.io/tree/master/sourcecode/spritekit/BackgroundScroll">here</a>. Hope you enjoy it!</p>
+
+<p>And that’s all folks!! See you in part <a href="https://pablogs.io/2019/06/30/Spritekit-BackgroundScrollPartTwo.html">two</a>!!!</p>
+
+
+                <div id="post-divider">
+                    <section id="pagination">
+                        
+                        <a class="pagination-previous" href="/2019/06/30/Spritekit-BackgroundScrollPartTwo.html">Spritekit - Background Scrolling - II &raquo</a>
+                        
+                        
+                        <a class="pagination-next" href="/2019/04/21/ParsingJSONFiles.html">&laquo; Parsing JSON files - Codable, A new hope </a>
+                                
+                    </section>
+                </div>
+            </div>
+
+			</article>    
+    	</div>
+
+	</div>
+    
+	<footer>	
+	<p>&copy; 2018 <a href="mailto:pablo@pablogs.io">Pablo Garcia. </a><a href="https://jekyllrb.com">Powered by Jekyll</a></p>
+</footer>
+
+</body>
+
+</html>
+
+
